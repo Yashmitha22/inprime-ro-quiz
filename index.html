@@ -334,6 +334,14 @@ main{flex:1;width:100%}
           </select>
           <input type="text" id="inp-position-other" placeholder="Enter your position" style="display:none;margin-top:10px">
         </div>
+        <div class="form-group am-field">
+          <label for="inp-amid" data-i18n="lbl_amid">AM Employee ID</label>
+          <input type="text" id="inp-amid" placeholder="INP0567" autocomplete="off">
+        </div>
+        <div class="form-group am-field">
+          <label for="inp-amname" data-i18n="lbl_amname">AM Full Name</label>
+          <input type="text" id="inp-amname" autocomplete="off">
+        </div>
         <div class="form-group">
           <label for="inp-area" data-i18n="lbl_area">Area Office</label>
           <input type="text" id="inp-area" placeholder="Hubli" required>
@@ -468,6 +476,8 @@ const QUIZ_MINUTES = 10; // (not shown to participants)
 
 // ===================== TRANSLATIONS =====================
 const UI = {
+  lbl_amid: { en:'AM Employee ID', kn:'AM ಉದ್ಯೋಗಿ ID', hi:'AM कर्मचारी ID' },
+  lbl_amname: { en:'AM Full Name', kn:'AM ಪೂರ್ಣ ಹೆಸರು', hi:'AM पूरा नाम' },
   reg_title: { en:'Bounce Rate &amp; OTRR Quiz', kn:'ಬೌನ್ಸ್ ದರ &amp; OTRR ಕ್ವಿಜ್', hi:'बाउंस दर और OTRR क्विज़' },
   reg_sub: { en:'Enter your details to begin', kn:'ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ವಿವರ ನಮೂದಿಸಿ', hi:'शुरू करने के लिए अपना विवरण भरें' },
   welcome: { en:'Welcome,', kn:'ಸ್ವಾಗತ,', hi:'स्वागत है,' },
@@ -736,7 +746,7 @@ explanation:{en:'Bounce = 10 ÷ 80 = 12.5% → missed. OTRR = (70 + 4) ÷ 80 = 9
 // ===================== APP STATE =====================
 let state = {
   lang: 'en',
-  empId: '', name: '', position: '', area: '', region: '',
+  empId: '', name: '', position: '', amId: '', amName: '', area: '', region: '',
   currentDay: null,
   currentQ: 0,
   answers: {},  // { questionId: selectedIndex }
@@ -788,6 +798,11 @@ function rerenderActive(){
 }
 
 // ===================== POSITION "OTHER" TOGGLE =====================
+function toggleAmFields(){
+  const isAM = $('inp-position').value === 'AM';
+  document.querySelectorAll('.am-field').forEach(el => el.style.display = isAM ? 'none' : '');
+}
+$('inp-position').addEventListener('change', toggleAmFields);
 $('inp-position').addEventListener('change', function(){
   const otherInput = $('inp-position-other');
   if(this.value === 'Other'){
@@ -823,20 +838,25 @@ $('btn-register').addEventListener('click', e => {
     if(!otherPos){ toast(t('fill_all')); return; }
     position = otherPos;
   }
+  const isAM = $('inp-position').value === 'AM';
+  const amId = isAM ? empId : $('inp-amid').value.trim();
+  const amName = isAM ? name : $('inp-amname').value.trim();
   const area = $('inp-area').value.trim();
   const region = $('inp-region').value;
-  if(!empId || !name || !position || !area || !region){
+  if(!empId || !name || !position || !amId || !amName || !area || !region){
     toast(t('fill_all'));
     return;
   }
   state.empId = empId;
   state.name = name;
   state.position = position;
+  state.amId = amId;
+  state.amName = amName;
   state.area = area;
   state.region = region;
 
   // Save to localStorage
-  localStorage.setItem('inprime_quiz_user', JSON.stringify({empId, name, position, area, region, lang: state.lang}));
+  localStorage.setItem('inprime_quiz_user', JSON.stringify({empId, name, position, amId, amName, area, region, lang: state.lang}));
 
   setUserChip();
   renderDaySelection();
@@ -851,6 +871,9 @@ $('btn-register').addEventListener('click', e => {
       $('inp-empid').value = saved.empId || '';
       $('inp-name').value = saved.name || '';
       $('inp-position').value = saved.position || '';
+      $('inp-amid').value = saved.amId || '';
+      $('inp-amname').value = saved.amName || '';
+      toggleAmFields();
       $('inp-area').value = saved.area || '';
       $('inp-region').value = saved.region || '';
       if(saved.lang){
@@ -924,6 +947,8 @@ function startQuiz(dayKey, dayNum){
     employeeId: state.empId,
     name: state.name,
     position: state.position,
+    amId: state.amId,
+    amName: state.amName,
     areaOffice: state.area,
     region: state.region,
     language: state.lang,
@@ -1064,6 +1089,7 @@ async function submitQuiz(){
     if(isCorrect) score++;
     answerDetails.push({
       questionNo: q.id,
+      question: q.q.en,
       selected: selected !== undefined ? ['A','B','C','D'][selected] : 'Not answered',
       correct: ['A','B','C','D'][q.correct],
       isCorrect: isCorrect
@@ -1083,6 +1109,8 @@ async function submitQuiz(){
     employeeId: state.empId,
     name: state.name,
     position: state.position,
+    amId: state.amId,
+    amName: state.amName,
     areaOffice: state.area,
     region: state.region,
     day: dayNum,
