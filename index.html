@@ -463,7 +463,7 @@ main{flex:1;width:100%}
 // CONFIGURATION
 // ===================================================================
 // Paste your Google Apps Script Web App URL below:
-const SHEETS_API_URL = '';
+const SHEETS_API_URL = 'https://script.google.com/a/macros/inprime.in/s/AKfycbxFb6Tvz55D3aFkinq9g2otkKzWNSTTEzUSRU7CSab23m8W9LzAEc8y6MLe4XRiHFXJvQ/exec';
 
 // ADMIN: Unlock days by adding day numbers to this array.
 // [1] = only Day 1 open
@@ -1257,25 +1257,41 @@ async function sendToSheets(data){
   if(!SHEETS_API_URL){ console.warn('SHEETS_API_URL is empty — nothing saved.', data); saveBackup(data); return false; }
   const payload = JSON.stringify({ ...data, submissionId: data.submissionId || makeId(), sentAt: new Date().toISOString() });
   const attempts = 5;
+  let networkBlocked = false;
   for(let i = 0; i < attempts; i++){
+    let res;
     try {
-      const res = await fetch(SHEETS_API_URL, {
+      res = await fetch(SHEETS_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: payload,
         redirect: 'follow'
       });
+    } catch(err){
+      // Browser couldn't read the reply (network or cross-site block).
+      networkBlocked = true;
+      console.warn('Sheets attempt ' + (i + 1) + ' failed:', err);
+      await new Promise(r => setTimeout(r, 800 * Math.pow(2, i) + Math.random() * 700));
+      continue;
+    }
+    networkBlocked = false;
+    // A Google sign-in page means the script is not open to everyone.
+    if(/accounts\.google\.com|ServiceLogin/.test(res.url || '')){
+      console.error('Sheets script requires Google sign-in. Set the deployment to "Anyone".');
+      saveBackup(data); return false;
+    }
+    try {
       const out = await res.json();
       if(out && (out.status === 'success' || out.status === 'duplicate')) return true;
       console.warn('Sheets replied:', out);
     } catch(err){
-      console.warn('Sheets attempt ' + (i + 1) + ' failed:', err);
-      // If the browser blocked reading the reply, send once without reading it.
-      if(i === attempts - 1){
-        try { await fetch(SHEETS_API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: payload }); return true; } catch(e){}
-      }
+      console.warn('Sheets returned a non-JSON reply (attempt ' + (i + 1) + ').');
     }
     await new Promise(r => setTimeout(r, 800 * Math.pow(2, i) + Math.random() * 700));
+  }
+  if(networkBlocked){
+    // Last resort: send without reading the reply. The script de-duplicates by id.
+    try { await fetch(SHEETS_API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: payload }); return true; } catch(e){}
   }
   saveBackup(data);
   return false;
