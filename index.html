@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>InPrime – RO Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --brand:#6b21a8;--brand-600:#7e22ce;--brand-700:#581c87;--brand-50:#faf5ff;--brand-100:#f3e8ff;--brand-200:#e9d5ff;
+  --ink:#0a0a0a;--text:#18181b;--muted:#71717a;--subtle:#a1a1aa;--border:#e4e4e7;--line:#f1f1f4;
+  --bg:#f7f6fa;--surface:#ffffff;
+  --green:#15803d;--green-bg:#f0fdf4;--green-bd:#bbf7d0;
+  --red:#b91c1c;--red-bg:#fef2f2;--red-bd:#fecaca;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-bd:#fde68a;
+  --r:10px;--r-lg:14px;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+  --shadow-lg:0 12px 32px -8px rgba(16,24,40,.12),0 4px 8px -4px rgba(16,24,40,.06);
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter','Noto Sans Kannada','Noto Sans Devanagari',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+svg{flex-shrink:0}
+
+/* ---------- Top bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(8px);-webkit-backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1120px;margin:0 auto;height:64px;padding:0 24px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.logo{font-size:24px;font-weight:800;letter-spacing:-.5px;color:var(--ink);line-height:1}
+.logo span{color:var(--brand)}
+.brand-divider{width:1px;height:22px;background:var(--border)}
+.brand-product{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.2px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.lang-selector{display:inline-flex;background:var(--line);border:1px solid var(--border);border-radius:9px;padding:3px}
+.lang-btn{border:0;background:transparent;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted);border-radius:7px;cursor:pointer;transition:all .15s}
+.lang-btn:hover{color:var(--text)}
+.lang-btn.active{background:var(--surface);color:var(--brand);box-shadow:var(--shadow)}
+.user-chip{display:none;align-items:center;gap:10px;padding:4px 12px 4px 4px;border:1px solid var(--border);border-radius:999px;background:var(--surface)}
+.user-chip.show{display:flex}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-meta{line-height:1.2}
+.user-name{font-size:13px;font-weight:600;color:var(--text);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-sub{font-size:11px;color:var(--muted)}
+
+/* ---------- Layout ---------- */
+main{flex:1;width:100%}
+.screen{display:none;max-width:1120px;margin:0 auto;padding:40px 24px 56px}
+.screen.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--brand)}
+.page-title{font-size:28px;font-weight:700;letter-spacing:-.4px;color:var(--ink);line-height:1.25}
+.page-sub{font-size:15px;color:var(--muted);margin-top:6px}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s,box-shadow .15s,transform .05s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:3px solid var(--brand-200);outline-offset:2px}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-700)}
+.btn-accent{background:var(--ink);color:#fff}
+.btn-accent:hover{background:#27272a}
+.btn-outline{background:var(--surface);color:var(--text);border-color:var(--border)}
+.btn-outline:hover{border-color:var(--subtle);background:#fafafa}
+.btn-block{width:100%}
+
+/* ---------- Registration ---------- */
+.reg-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:32px;align-items:stretch}
+.hero{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--ink);color:#fff;padding:44px 40px;display:flex;flex-direction:column}
+.hero::before{content:'';position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(126,34,206,.55),rgba(126,34,206,0) 70%)}
+.hero::after{content:'';position:absolute;left:-80px;bottom:-140px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(107,33,168,.35),rgba(107,33,168,0) 70%)}
+.hero > *{position:relative;z-index:1}
+.hero .eyebrow{color:#d8b4fe}
+.hero h1{font-size:36px;line-height:1.15;font-weight:800;letter-spacing:-.8px;margin:14px 0 12px}
+.hero h1 span{color:#c084fc}
+.hero p.lead{font-size:16px;color:#d4d4d8;max-width:440px}
+.feature-list{list-style:none;margin:32px 0 0;display:grid;gap:16px}
+.feature-list li{display:flex;gap:14px;align-items:flex-start}
+.f-icon{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#d8b4fe}
+.f-title{font-size:15px;font-weight:600;color:#fff}
+.f-desc{font-size:13px;color:#a1a1aa;margin-top:1px}
+.hero-foot{margin-top:auto;padding-top:32px;font-size:12px;color:#a1a1aa;display:flex;align-items:center;gap:8px}
+.form-card{padding:36px}
+.form-card h2{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.2px}
+.form-card .form-sub{font-size:14px;color:var(--muted);margin:4px 0 26px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px}
+.form-group{display:flex;flex-direction:column}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
+.form-group input,.form-group select{height:46px;width:100%;padding:0 14px;border:1px solid var(--border);border-radius:var(--r);font-size:15px;font-family:inherit;color:var(--text);background:var(--surface);transition:border-color .15s,box-shadow .15s;appearance:none;-webkit-appearance:none}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.form-group input::placeholder{color:var(--subtle)}
+.form-group input:hover,.form-group select:hover{border-color:#d4d4d8}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-100)}
+.form-actions{margin-top:26px}
+.privacy-note{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);margin-top:14px}
+
+/* simple registration */
+.reg-wrap{max-width:540px;margin:8px auto 0}
+.reg-head{text-align:center;margin-bottom:28px}
+.reg-icon{width:52px;height:52px;border-radius:14px;background:var(--brand-50);color:var(--brand);border:1px solid var(--brand-100);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.reg-title{font-size:24px;font-weight:700;color:var(--ink);letter-spacing:-.3px;line-height:1.3}
+.reg-sub{font-size:14px;color:var(--muted);margin-top:6px}
+
+/* ---------- Day selection ---------- */
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.info-row{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;margin-bottom:28px}
+.info-card{padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+.info-icon{width:36px;height:36px;border-radius:9px;background:var(--brand-50);color:var(--brand);display:flex;align-items:center;justify-content:center;border:1px solid var(--brand-100)}
+.info-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:3px}
+.schedule-banner,.formula-note{font-size:14px;color:var(--text);line-height:1.55}
+.section-label{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px}
+.day-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.day-card{position:relative;padding:24px;display:flex;flex-direction:column;gap:14px;min-height:210px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.day-card.open{cursor:pointer}
+.day-card.open:hover{border-color:var(--brand-200);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.day-card.locked{background:#fbfbfc}
+.day-top{display:flex;align-items:center;justify-content:space-between}
+.day-label{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid}
+.pill-open{color:var(--green);background:var(--green-bg);border-color:var(--green-bd)}
+.pill-open .dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+.pill-locked{color:var(--muted);background:var(--line);border-color:var(--border)}
+.day-title{font-size:19px;font-weight:700;color:var(--ink);letter-spacing:-.2px;line-height:1.3}
+.day-card.locked .day-title{color:#52525b}
+.day-meta{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.day-cta{margin-top:auto}
+.day-cta .btn{height:42px;font-size:14px;width:100%}
+.day-cta .btn[disabled]{background:var(--line);color:var(--subtle);border-color:var(--border);cursor:not-allowed}
+.link-btn{background:none;border:0;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 0}
+.link-btn:hover{color:var(--brand)}
+
+/* ---------- Quiz ---------- */
+#screen-quiz{max-width:800px}
+.quiz-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.quiz-progress{font-size:15px;font-weight:700;color:var(--ink)}
+.quiz-timer{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+.progress-bar{height:6px;background:#e9e7ef;border-radius:999px;overflow:hidden;margin-bottom:22px}
+.progress-fill{height:100%;background:var(--brand);border-radius:999px;transition:width .35s ease}
+#q-card{padding:32px}
+.q-badge{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:6px;font-size:12px;font-weight:600;margin-bottom:16px;border:1px solid}
+.q-badge.numerical{background:var(--brand-50);color:var(--brand);border-color:var(--brand-100)}
+.q-badge.conceptual{background:#eff6ff;color:#1d4ed8;border-color:#dbeafe}
+.q-badge.scenario{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.q-badge.tricky{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd)}
+.q-badge.truefalse{background:var(--line);color:#3f3f46;border-color:var(--border)}
+.q-text{font-size:20px;font-weight:600;line-height:1.5;color:var(--ink);margin-bottom:24px;letter-spacing:-.1px}
+.options{display:grid;gap:10px}
+.option-btn{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);cursor:pointer;text-align:left;font-size:15px;line-height:1.45;color:var(--text);transition:border-color .15s,background .15s,box-shadow .15s}
+.option-btn:hover{border-color:var(--brand-200);background:var(--brand-50)}
+.option-btn .opt-letter{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);flex-shrink:0}
+.option-btn .opt-mark{margin-left:auto;display:none}
+.option-btn.selected{border-color:var(--brand);background:var(--brand-50)}
+.option-btn.selected .opt-letter{background:var(--brand);border-color:var(--brand);color:#fff}
+.option-btn.correct{border-color:#86efac;background:var(--green-bg);cursor:default}
+.option-btn.correct .opt-letter{background:var(--green);border-color:var(--green);color:#fff}
+.option-btn.correct .opt-mark.ok{display:block;color:var(--green)}
+.option-btn.wrong{border-color:#fca5a5;background:var(--red-bg);cursor:default}
+.option-btn.wrong .opt-letter{background:var(--red);border-color:var(--red);color:#fff}
+.option-btn.wrong .opt-mark.no{display:block;color:var(--red)}
+.option-btn.dim{opacity:.55;cursor:default}
+.option-btn.dim:hover{border-color:var(--border);background:var(--surface)}
+.explanation{display:none;margin-top:20px;padding:16px 18px;border-radius:var(--r);background:var(--brand-50);border:1px solid var(--brand-100);font-size:14px;line-height:1.6;color:#3b0764}
+.explanation.show{display:flex;gap:12px}
+.explanation .ex-icon{color:var(--brand);margin-top:1px}
+.explanation strong{display:block;color:var(--brand-700);font-weight:700;margin-bottom:2px}
+.quiz-nav{display:flex;justify-content:space-between;gap:12px;margin-top:20px}
+.quiz-nav .btn{min-width:150px}
+
+/* ---------- Results ---------- */
+#screen-results{max-width:880px}
+#result-card{overflow:hidden}
+.result-band{height:6px;background:var(--brand)}
+.result-band.excellent{background:linear-gradient(90deg,#15803d,#22c55e)}
+.result-band.good{background:linear-gradient(90deg,#6b21a8,#a855f7)}
+.result-band.poor{background:linear-gradient(90deg,#b91c1c,#f87171)}
+.score-hero{padding:40px 36px 32px;text-align:center}
+.result-emoji{width:64px;height:64px;border-radius:16px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;animation:pop .45s ease both}
+.result-emoji.excellent{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.result-emoji.good{background:var(--brand-50);color:var(--brand);border:1px solid var(--brand-100)}
+.result-emoji.poor{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.result-title{font-size:30px;font-weight:800;letter-spacing:-.6px;line-height:1.2;animation:pop .45s ease .08s both}
+.result-title.excellent{color:var(--green)}
+.result-title.good{color:var(--brand)}
+.result-title.poor{color:var(--red)}
+.result-sub{font-size:15px;color:var(--muted);max-width:520px;margin:10px auto 0}
+.score-msg{display:none}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border)}
+.stat{padding:22px 16px;text-align:center}
+.stat + .stat{border-left:1px solid var(--border)}
+.stat-label{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.score-circle{display:contents}
+.score-label{display:none}
+.stat-value,.score-num,.score-pct{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.5px;margin-top:4px;font-variant-numeric:tabular-nums}
+.score-pct.excellent{color:var(--green)}.score-pct.good{color:var(--brand)}.score-pct.poor{color:var(--red)}
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+.review-card{margin-top:24px}
+.review-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.review-head h3{font-size:16px;font-weight:700;color:var(--ink)}
+.review-legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.review-legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:8px;height:8px;border-radius:50%}
+.review-item{display:grid;grid-template-columns:32px 1fr;gap:14px;padding:20px 24px;border-bottom:1px solid var(--line)}
+.review-item:last-child{border-bottom:0}
+.review-status{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.review-status.correct{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.review-status.wrong{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.review-qno{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.4px;text-transform:uppercase}
+.review-q{font-size:15px;font-weight:600;color:var(--ink);margin:2px 0 10px;line-height:1.5}
+.review-answer{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;font-size:13px;border:1px solid}
+.chip b{font-weight:600}
+.chip-you{background:#fafafa;border-color:var(--border);color:#3f3f46}
+.chip-you.bad{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
+.chip-ok{background:var(--green-bg);border-color:var(--green-bd);color:var(--green)}
+.review-exp{font-size:13px;color:var(--muted);line-height:1.6}
+.results-actions{display:flex;justify-content:center;margin-top:28px}
+
+/* ---------- Footer ---------- */
+.site-footer{border-top:1px solid var(--border);background:var(--surface)}
+.site-footer .inner{max-width:1120px;margin:0 auto;padding:18px 24px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+
+/* ---------- Overlays ---------- */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:var(--r);font-size:14px;font-weight:500;z-index:999;opacity:0;pointer-events:none;transition:all .25s;box-shadow:var(--shadow-lg);max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.overlay,.confirm-modal{display:none;position:fixed;inset:0;background:rgba(10,10,10,.45);backdrop-filter:blur(2px);z-index:998;align-items:center;justify-content:center;padding:16px}
+.overlay.show,.confirm-modal.show{display:flex}
+.overlay-card,.confirm-box{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);width:100%;max-width:380px;padding:28px;text-align:center;animation:pop .25s ease both}
+.overlay-card{font-size:15px;color:var(--text)}
+.spinner{width:36px;height:36px;border:3px solid var(--brand-100);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.confirm-icon{width:48px;height:48px;border-radius:12px;background:var(--brand-50);color:var(--brand);border:1px solid var(--brand-100);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.confirm-box p{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:22px}
+.confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.confirm-btns .btn{height:44px}
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:997;overflow:hidden}
+.confetti{position:absolute;top:-12px;animation:confettiFall 3s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  .reg-grid{grid-template-columns:1fr}
+  .hero{padding:32px 28px}
+  .hero h1{font-size:28px}
+  .feature-list{margin-top:24px}
+  .hero-foot{display:none}
+  .info-row{grid-template-columns:1fr}
+  .day-grid{grid-template-columns:1fr}
+  .day-card{min-height:0}
+}
+@media (max-width:600px){
+  .topbar-inner{padding:0 16px;height:58px}
+  .brand-divider,.brand-product{display:none}
+  .user-meta{display:none}
+  .user-chip{padding:3px}
+  .lang-btn{padding:6px 9px;font-size:12px}
+  .screen{padding:24px 16px 40px}
+  .form-card{padding:24px 20px}
+  .form-grid{grid-template-columns:1fr}
+  .page-title{font-size:23px}
+  #q-card{padding:22px 18px}
+  .q-text{font-size:17px}
+  .quiz-nav .btn{min-width:0;flex:1}
+  .score-hero{padding:32px 20px 26px}
+  .result-title{font-size:24px}
+  .stat-value,.score-num,.score-pct{font-size:22px}
+  .review-item{padding:18px 16px}
+  .review-head{padding:16px}
+  .review-legend{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== TOP BAR ==================== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">In<span>Prime</span></div>
+      <div class="brand-divider"></div>
+      <div class="brand-product" data-i18n="subtitle">RO Quiz</div>
+    </div>
+    <div class="topbar-right">
+      <div class="lang-selector" role="group" aria-label="Language">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="kn">ಕನ್ನಡ</button>
+        <button class="lang-btn" data-lang="hi">हिन्दी</button>
+      </div>
+      <div class="user-chip" id="user-chip">
+        <div class="avatar" id="user-avatar"></div>
+        <div class="user-meta">
+          <div class="user-name" id="user-name"></div>
+          <div class="user-sub" id="user-sub"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ==================== SCREEN: REGISTRATION ==================== -->
+<section id="screen-register" class="screen active">
+  <div class="reg-wrap">
+    <div class="card form-card">
+      <div class="reg-head">
+        <div class="reg-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h1 class="reg-title" data-i18n-html="reg_title">Bounce Rate &amp; OTRR Quiz</h1>
+        <p class="reg-sub" data-i18n="reg_sub">3 days · about {m} min each</p>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="inp-empid" data-i18n="lbl_empid">Employee ID</label>
+          <input type="text" id="inp-empid" placeholder="INP1234" autocomplete="off" required>
+        </div>
+        <div class="form-group">
+          <label for="inp-name" data-i18n="lbl_name">Full Name</label>
+          <input type="text" id="inp-name" autocomplete="name" required>
+        </div>
+        <div class="form-group full">
+          <label for="inp-position" data-i18n="lbl_position">Position</label>
+          <select id="inp-position">
+            <option value="" data-i18n="opt_select_pos">-- Select Position --</option>
+            <option value="RO">RO (Relationship Officer)</option>
+            <option value="AM">AM (Area Manager)</option>
+            <option value="CM">CM (Credit Manager)</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="text" id="inp-position-other" placeholder="Enter your position" style="display:none;margin-top:10px">
+        </div>
+        <div class="form-group">
+          <label for="inp-area" data-i18n="lbl_area">Area Office</label>
+          <input type="text" id="inp-area" placeholder="Hubli" required>
+        </div>
+        <div class="form-group">
+          <label for="inp-region" data-i18n="lbl_region">Region</label>
+          <select id="inp-region">
+            <option value="" data-i18n="opt_select">-- Select Region --</option>
+            <option value="South India" data-i18n="opt_south">South India</option>
+            <option value="North India" data-i18n="opt_north">North India</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary btn-block" id="btn-register"><span data-i18n="btn_start">Start Quiz</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCREEN: DAY SELECTION ==================== -->
+<section id="screen-days" class="screen">
+  <div class="page-head">
+    <div>
+      <div class="eyebrow" data-i18n="dash_eyebrow">Your dashboard</div>
+      <h1 class="page-title"><span data-i18n="welcome">Welcome,</span> <span id="welcome-name"></span></h1>
+      <p class="page-sub" data-i18n="select_day_sub">About {m} minutes</p>
+    </div>
+    <button class="link-btn" id="btn-logout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span data-i18n="btn_change">Change Details</span></button>
+  </div>
+
+  <div class="info-row">
+    <div class="card info-card">
+      <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <div><div class="info-label" data-i18n="lbl_schedule">Schedule</div><div class="schedule-banner" data-i18n="schedule">3-day quiz · A new day opens every day at 10:00 AM</div></div>
+    </div>
+    <div class="card info-card">
+      <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2"/></svg></div>
+      <div><div class="info-label" data-i18n="lbl_formulas">Formulas used</div><div class="formula-note" data-i18n="formulas">Bounce Rate = bounced accounts ÷ eligible accounts × 100. OTRR = accounts paid on or before the due date (any mode) ÷ eligible accounts × 100.</div></div>
+    </div>
+  </div>
+
+  <div class="section-label" data-i18n="select_day">Select Quiz Day</div>
+  <div class="day-grid" id="day-grid"></div>
+</section>
+
+<!-- ==================== SCREEN: QUIZ ==================== -->
+<section id="screen-quiz" class="screen">
+  <div class="quiz-head">
+    <div class="quiz-progress" id="q-progress"></div>
+    <div class="quiz-timer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg><span id="q-timer">00:00</span></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="q-bar"></div></div>
+
+  <div class="card" id="q-card">
+    <div class="q-badge" id="q-badge"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="q-options"></div>
+    <div class="explanation" id="q-explanation"></div>
+  </div>
+
+  <div class="quiz-nav">
+    <button class="btn btn-outline" id="btn-prev" data-i18n="btn_prev">← Previous</button>
+    <button class="btn btn-primary" id="btn-next" data-i18n="btn_next">Next →</button>
+  </div>
+</section>
+
+<!-- ==================== SCREEN: RESULTS ==================== -->
+<section id="screen-results" class="screen">
+  <div class="card" id="result-card">
+    <div class="result-band" id="r-band"></div>
+    <div class="score-hero">
+      <div class="result-emoji" id="r-emoji"></div>
+      <div class="result-title" id="r-title"></div>
+      <div class="result-sub" id="r-sub"></div>
+      <div class="score-msg" id="r-msg"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-label" data-i18n="r_score">Score</div><div class="score-circle"><div class="score-num" id="r-score"></div><div class="score-label" data-i18n="r_correct">Correct</div></div></div>
+      <div class="stat"><div class="stat-label" data-i18n="r_accuracy">Accuracy</div><div class="score-pct" id="r-pct">0%</div></div>
+      <div class="stat"><div class="stat-label" data-i18n="r_time">Time taken</div><div class="stat-value" id="r-time">00:00</div></div>
+    </div>
+  </div>
+
+  <div class="card review-card">
+    <div class="review-head">
+      <h3 data-i18n="r_review">Review Answers</h3>
+      <div class="review-legend"><span><i class="lg" style="background:#22c55e"></i><span data-i18n="r_correct">Correct</span></span><span><i class="lg" style="background:#ef4444"></i><span data-i18n="r_wrong">Incorrect</span></span></div>
+    </div>
+    <div id="r-review"></div>
+  </div>
+
+  <div class="results-actions">
+    <button class="btn btn-primary" id="btn-back-days" data-i18n="btn_back">← Back to Day Selection</button>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="inner">
+    <span>© 2026 InPrime Finserv (STK Credit Private Limited)</span>
+    <span data-i18n="footer_note">For internal training use only</span>
+  </div>
+</footer>
+
+<!-- Confirm Modal -->
+<div class="confirm-modal" id="confirm-modal">
+  <div class="confirm-box">
+    <div class="confirm-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+    <p id="confirm-msg"></p>
+    <div class="confirm-btns">
+      <button class="btn btn-outline" id="confirm-no" data-i18n="btn_cancel">Cancel</button>
+      <button class="btn btn-primary" id="confirm-yes" data-i18n="btn_submit">Submit</button>
+    </div>
+  </div>
+</div>
+
+<div class="confetti-container" id="confetti-container"></div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <div data-i18n="submitting">Submitting your answers...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+<script>
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+// Paste your Google Apps Script Web App URL below:
+const SHEETS_API_URL = '';
+
+// ADMIN: Unlock days by adding day numbers to this array.
+// [1] = only Day 1 open
+// [1,2] = Days 1 & 2 open
+// [1,2,3] = all 3 days open
+const UNLOCKED_DAYS = [1];
+
+// Time shown to participants on the day cards (minutes)
+const QUIZ_MINUTES = 10;
+// ===================================================================
+
+// ===================== TRANSLATIONS =====================
+const UI = {
+  reg_title: { en:'Bounce Rate &amp; OTRR Quiz', kn:'ಬೌನ್ಸ್ ದರ &amp; OTRR ಕ್ವಿಜ್', hi:'बाउंस दर और OTRR क्विज़' },
+  reg_sub: { en:'3 days · about {m} min each', kn:'3 ದಿನ · ಪ್ರತಿದಿನ ಸುಮಾರು {m} ನಿಮಿಷ', hi:'3 दिन · हर दिन लगभग {m} मिनट' },
+  dash_eyebrow: { en:'Your dashboard', kn:'ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', hi:'आपका डैशबोर्ड' },
+  welcome: { en:'Welcome,', kn:'ಸ್ವಾಗತ,', hi:'स्वागत है,' },
+  lbl_schedule: { en:'Schedule', kn:'ವೇಳಾಪಟ್ಟಿ', hi:'समय-सारणी' },
+  lbl_formulas: { en:'Formulas used', kn:'ಬಳಸಿದ ಸೂತ್ರಗಳು', hi:'उपयोग किए गए सूत्र' },
+  status_open: { en:'Open', kn:'ತೆರೆದಿದೆ', hi:'खुला' },
+  start_day: { en:'Start round', kn:'ಸುತ್ತು ಪ್ರಾರಂಭಿಸಿ', hi:'राउंड शुरू करें' },
+  day_word: { en:'Day', kn:'ದಿನ', hi:'दिन' },
+  explanation: { en:'Explanation', kn:'ವಿವರಣೆ', hi:'व्याख्या' },
+  r_score: { en:'Score', kn:'ಅಂಕ', hi:'स्कोर' },
+  r_accuracy: { en:'Accuracy', kn:'ನಿಖರತೆ', hi:'सटीकता' },
+  r_time: { en:'Time taken', kn:'ತೆಗೆದುಕೊಂಡ ಸಮಯ', hi:'लिया गया समय' },
+  r_wrong: { en:'Incorrect', kn:'ತಪ್ಪು', hi:'गलत' },
+  question_word: { en:'Question', kn:'ಪ್ರಶ್ನೆ', hi:'प्रश्न' },
+  btn_cancel: { en:'Cancel', kn:'ರದ್ದು', hi:'रद्द करें' },
+  footer_note: { en:'For internal training use only', kn:'ಆಂತರಿಕ ತರಬೇತಿ ಬಳಕೆಗೆ ಮಾತ್ರ', hi:'केवल आंतरिक प्रशिक्षण उपयोग हेतु' },
+  subtitle: { en:'RO Quiz', kn:'RO ಕ್ವಿಜ್', hi:'RO क्विज़' },
+  lbl_lang: { en:'Language', kn:'ಭಾಷೆ', hi:'भाषा' },
+  lbl_empid: { en:'Employee ID', kn:'ಉದ್ಯೋಗಿ ID', hi:'कर्मचारी ID' },
+  lbl_name: { en:'Full Name', kn:'ಪೂರ್ಣ ಹೆಸರು', hi:'पूरा नाम' },
+  lbl_position: { en:'Position', kn:'ಹುದ್ದೆ', hi:'पद' },
+  opt_select_pos: { en:'-- Select Position --', kn:'-- ಹುದ್ದೆ ಆಯ್ಕೆ ಮಾಡಿ --', hi:'-- पद चुनें --' },
+  lbl_area: { en:'Area Office', kn:'ಪ್ರದೇಶ ಕಚೇರಿ', hi:'क्षेत्र कार्यालय' },
+  lbl_region: { en:'Region', kn:'ವಲಯ', hi:'क्षेत्र' },
+  opt_select: { en:'-- Select Region --', kn:'-- ವಲಯ ಆಯ್ಕೆ ಮಾಡಿ --', hi:'-- क्षेत्र चुनें --' },
+  opt_south: { en:'South India', kn:'ದಕ್ಷಿಣ ಭಾರತ', hi:'दक्षिण भारत' },
+  opt_north: { en:'North India', kn:'ಉತ್ತರ ಭಾರತ', hi:'उत्तर भारत' },
+  btn_start: { en:'Start Quiz', kn:'ಕ್ವಿಜ್ ಪ್ರಾರಂಭಿಸಿ', hi:'क्विज़ शुरू करें' },
+  select_day: { en:'Select Quiz Day', kn:'ಕ್ವಿಜ್ ದಿನ ಆಯ್ಕೆ ಮಾಡಿ', hi:'क्विज़ दिन चुनें' },
+  select_day_sub: { en:'About {m} minutes', kn:'ಸುಮಾರು {m} ನಿಮಿಷ', hi:'लगभग {m} मिनट' },
+  mins: { en:'min', kn:'ನಿಮಿಷ', hi:'मिनट' },
+  btn_change: { en:'Change Details', kn:'ವಿವರಗಳನ್ನು ಬದಲಾಯಿಸಿ', hi:'विवरण बदलें' },
+  btn_prev: { en:'← Previous', kn:'← ಹಿಂದಿನ', hi:'← पिछला' },
+  btn_next: { en:'Next →', kn:'ಮುಂದಿನ →', hi:'अगला →' },
+  btn_submit: { en:'Submit Quiz', kn:'ಕ್ವಿಜ್ ಸಲ್ಲಿಸಿ', hi:'क्विज़ सबमिट करें' },
+  r_correct: { en:'Correct', kn:'ಸರಿ', hi:'सही' },
+  r_review: { en:'Review Answers', kn:'ಉತ್ತರಗಳ ಪರಿಶೀಲನೆ', hi:'उत्तर समीक्षा' },
+  btn_back: { en:'← Back to Day Selection', kn:'← ದಿನ ಆಯ್ಕೆಗೆ ಹಿಂದೆ', hi:'← दिन चयन पर वापस' },
+  submitting: { en:'Submitting your answers...', kn:'ನಿಮ್ಮ ಉತ್ತರಗಳನ್ನು ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ...', hi:'आपके उत्तर सबमिट हो रहे हैं...' },
+  submitted: { en:'Answers saved to Google Sheets!', kn:'ಉತ್ತರಗಳು Google Sheets ಗೆ ಉಳಿಸಲಾಗಿದೆ!', hi:'उत्तर Google Sheets में सहेजे गए!' },
+  submit_fail: { en:'Could not save to Google Sheets. Your score is still shown below.', kn:'Google Sheets ಗೆ ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸ್ಕೋರ್ ಕೆಳಗೆ ತೋರಿಸಲಾಗಿದೆ.', hi:'Google Sheets में सहेजा नहीं जा सका। आपका स्कोर नीचे दिखाया गया है।' },
+  fill_all: { en:'Please fill all fields', kn:'ದಯವಿಟ್ಟು ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ', hi:'कृपया सभी फ़ील्ड भरें' },
+  confirm_submit: { en:'Submit your answers?', kn:'ನಿಮ್ಮ ಉತ್ತರಗಳನ್ನು ಸಲ್ಲಿಸಬೇಕೆ?', hi:'अपने उत्तर सबमिट करें?' },
+  q_of: { en:'Q {c}', kn:'ಪ್ರ {c}', hi:'प्र {c}' },
+  your_ans: { en:'Your answer', kn:'ನಿಮ್ಮ ಉತ್ತರ', hi:'आपका उत्तर' },
+  correct_ans: { en:'Correct answer', kn:'ಸರಿಯಾದ ಉತ್ತರ', hi:'सही उत्तर' },
+  not_answered: { en:'Not answered', kn:'ಉತ್ತರಿಸಿಲ್ಲ', hi:'उत्तर नहीं दिया' },
+  excellent: { en:'Excellent! 🏆', kn:'ಅತ್ಯುತ್ತಮ! 🏆', hi:'शानदार! 🏆' },
+  good: { en:'Good job! 👍', kn:'ಒಳ್ಳೆಯ ಕೆಲಸ! 👍', hi:'अच्छा काम! 👍' },
+  keep_trying: { en:'Keep practicing! 💪', kn:'ಅಭ್ಯಾಸ ಮುಂದುವರಿಸಿ! 💪', hi:'अभ्यास जारी रखें! 💪' },
+  mins: { en:'min', kn:'ನಿಮಿಷ', hi:'मिनट' },
+  coming_soon: { en:'Coming Soon', kn:'ಶೀಘ್ರದಲ್ಲಿ', hi:'जल्द आ रहा है' },
+  locked: { en:'Locked', kn:'ಲಾಕ್ ಆಗಿದೆ', hi:'लॉक है' },
+  open_now: { en:'Open', kn:'ತೆರೆದಿದೆ', hi:'खुला है' },
+  schedule: { en:'3-day quiz · A new day opens every day at 10:00 AM', kn:'3 ದಿನಗಳ ಕ್ವಿಜ್ · ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ 10:00 ಗಂಟೆಗೆ ಹೊಸ ದಿನ ತೆರೆಯುತ್ತದೆ', hi:'3 दिन की क्विज़ · हर दिन सुबह 10:00 बजे नया दिन खुलेगा' },
+  formulas: { en:'Bounce Rate = bounced accounts ÷ eligible accounts × 100. OTRR = accounts paid on or before the due date (any mode) ÷ eligible accounts × 100. A bounce is still counted even if the customer pays later.', kn:'ಬೌನ್ಸ್ ದರ = ಬೌನ್ಸ್ ಆದ ಖಾತೆಗಳು ÷ ಅರ್ಹ ಖಾತೆಗಳು × 100. OTRR = ನಿಗದಿತ ದಿನಾಂಕದಂದು ಅಥವಾ ಮೊದಲು (ಯಾವುದೇ ವಿಧಾನದಲ್ಲಿ) ಪಾವತಿಸಿದ ಖಾತೆಗಳು ÷ ಅರ್ಹ ಖಾತೆಗಳು × 100. ಗ್ರಾಹಕರು ನಂತರ ಪಾವತಿಸಿದರೂ ಬೌನ್ಸ್ ಅನ್ನು ಎಣಿಸಲಾಗುತ್ತದೆ.', hi:'बाउंस दर = बाउंस हुए खाते ÷ पात्र खाते × 100. OTRR = देय तिथि पर या उससे पहले (किसी भी माध्यम से) भुगतान करने वाले खाते ÷ पात्र खाते × 100. ग्राहक बाद में भुगतान कर दे तब भी बाउंस गिना जाता है।' },
+  no_api: { en:'Google Sheets URL not configured. Results shown but not saved.', kn:'Google Sheets URL ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ.', hi:'Google Sheets URL कॉन्फ़िगर नहीं है।' },
+};
+
+// ===================== DAY METADATA =====================
+const DAY_META = [
+  { key:'day1', en:'Bounce Rate', kn:'ಬೌನ್ಸ್ ದರ', hi:'बाउंस दर' },
+  { key:'day2', en:'OTRR', kn:'OTRR', hi:'OTRR' },
+  { key:'day3', en:'Bounce Rate + OTRR', kn:'ಬೌನ್ಸ್ ದರ + OTRR', hi:'बाउंस दर + OTRR' },
+];
+
+// ===================== QUESTIONS (15 per day) =====================
+const T = (en,kn,hi) => ({en,kn,hi});
+const NUM = s => ({en:s,kn:s,hi:s});
+const DB = T("Beginner","ಆರಂಭಿಕ","शुरुआती");
+const DI = T("Intermediate","ಮಧ್ಯಮ","मध्यम");
+const DA = T("Advanced","ಮುಂದುವರಿದ","उन्नत");
+const TRUE_ = T("True","ಸರಿ","सही"), FALSE_ = T("False","ತಪ್ಪು","गलत"), DASH = NUM("—");
+const Q = (id,type,difficulty,q,options,correct,explanation) => ({id,type,difficulty,q,options,correct,explanation});
+const TF = (id,difficulty,q,correct,explanation) => Q(id,'truefalse',difficulty,q,[TRUE_,FALSE_,DASH,DASH],correct,explanation);
+
+const QUESTIONS = {
+// ===== DAY 1 — BOUNCE RATE TRAPS =====
+day1: [
+{id:1,type:'numerical',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'40 accounts were presented for auto-debit. 6 bounced. What is the Bounce Rate?',kn:'40 ಖಾತೆಗಳನ್ನು ಸ್ವಯಂ-ಡೆಬಿಟ್‌ಗೆ ಕಳುಹಿಸಲಾಯಿತು. 6 ಬೌನ್ಸ್ ಆದವು. ಬೌನ್ಸ್ ದರ ಎಷ್ಟು?',hi:'40 खाते ऑटो-डेबिट के लिए भेजे गए। 6 बाउंस हुए। बाउंस दर क्या है?'},
+options:[{en:'15%',kn:'15%',hi:'15%'},{en:'34%',kn:'34%',hi:'34%'},{en:'6%',kn:'6%',hi:'6%'},{en:'12%',kn:'12%',hi:'12%'}],correct:0,
+explanation:{en:'6 ÷ 40 × 100 = 15%. Trap: "6 bounced" does not mean 6%. Always divide by the accounts presented.',kn:'6 ÷ 40 × 100 = 15%. "6 ಬೌನ್ಸ್" ಎಂದರೆ 6% ಅಲ್ಲ. ಯಾವಾಗಲೂ ಒಟ್ಟು ಖಾತೆಗಳಿಂದ ಭಾಗಿಸಿ.',hi:'6 ÷ 40 × 100 = 15%। "6 बाउंस" का मतलब 6% नहीं। हमेशा कुल खातों से भाग दें।'}},
+{id:2,type:'tricky',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'50 accounts. 5 auto-debits bounced. 3 of those customers paid cash the same evening. What is the Bounce Rate?',kn:'50 ಖಾತೆಗಳು. 5 ಸ್ವಯಂ-ಡೆಬಿಟ್ ಬೌನ್ಸ್. ಅವರಲ್ಲಿ 3 ಗ್ರಾಹಕರು ಅದೇ ಸಂಜೆ ನಗದು ಪಾವತಿಸಿದರು. ಬೌನ್ಸ್ ದರ ಎಷ್ಟು?',hi:'50 खाते। 5 ऑटो-डेबिट बाउंस। उनमें से 3 ग्राहकों ने उसी शाम नकद भुगतान किया। बाउंस दर क्या है?'},
+options:[{en:'6%',kn:'6%',hi:'6%'},{en:'10%',kn:'10%',hi:'10%'},{en:'16%',kn:'16%',hi:'16%'},{en:'4%',kn:'4%',hi:'4%'}],correct:1,
+explanation:{en:'5 ÷ 50 × 100 = 10%. Collecting cash later is recovery — it does not erase the bounce.',kn:'5 ÷ 50 × 100 = 10%. ನಂತರ ನಗದು ಸಂಗ್ರಹಿಸುವುದು ವಸೂಲಾತಿ — ಬೌನ್ಸ್ ಅಳಿಸುವುದಿಲ್ಲ.',hi:'5 ÷ 50 × 100 = 10%। बाद में नकद लेना वसूली है — इससे बाउंस नहीं मिटता।'}},
+{id:3,type:'numerical',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'Bounce Rate is 8% on 75 accounts. How many accounts bounced?',kn:'75 ಖಾತೆಗಳಲ್ಲಿ ಬೌನ್ಸ್ ದರ 8%. ಎಷ್ಟು ಖಾತೆಗಳು ಬೌನ್ಸ್ ಆದವು?',hi:'75 खातों पर बाउंस दर 8% है। कितने खाते बाउंस हुए?'},
+options:[{en:'9',kn:'9',hi:'9'},{en:'67',kn:'67',hi:'67'},{en:'6',kn:'6',hi:'6'},{en:'8',kn:'8',hi:'8'}],correct:2,
+explanation:{en:'8% of 75 = 75 × 8 ÷ 100 = 6. (67 is the number that did NOT bounce, after rounding.)',kn:'75 ರ 8% = 75 × 8 ÷ 100 = 6.',hi:'75 का 8% = 75 × 8 ÷ 100 = 6।'}},
+{id:4,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'RO Anil: 2 bounces out of 10 accounts. RO Bhavna: 10 bounces out of 80 accounts. Who has the better (lower) Bounce Rate?',kn:'RO ಅನಿಲ್: 10 ಖಾತೆಗಳಲ್ಲಿ 2 ಬೌನ್ಸ್. RO ಭಾವನಾ: 80 ಖಾತೆಗಳಲ್ಲಿ 10 ಬೌನ್ಸ್. ಯಾರ ಬೌನ್ಸ್ ದರ ಉತ್ತಮ (ಕಡಿಮೆ)?',hi:'RO अनिल: 10 खातों में 2 बाउंस। RO भावना: 80 खातों में 10 बाउंस। किसकी बाउंस दर बेहतर (कम) है?'},
+options:[{en:'Both are equal',kn:'ಇಬ್ಬರೂ ಸಮಾನ',hi:'दोनों बराबर'},{en:'Cannot say',kn:'ಹೇಳಲಾಗದು',hi:'कह नहीं सकते'},{en:'Anil — he has fewer bounces',kn:'ಅನಿಲ್ — ಕಡಿಮೆ ಬೌನ್ಸ್',hi:'अनिल — कम बाउंस'},{en:'Bhavna — 12.5% vs 20%',kn:'ಭಾವನಾ — 12.5% vs 20%',hi:'भावना — 12.5% बनाम 20%'}],correct:3,
+explanation:{en:'Anil = 2 ÷ 10 = 20%. Bhavna = 10 ÷ 80 = 12.5%. Fewer bounces does not mean a better rate.',kn:'ಅನಿಲ್ = 20%. ಭಾವನಾ = 12.5%. ಕಡಿಮೆ ಬೌನ್ಸ್ ಎಂದರೆ ಉತ್ತಮ ದರ ಅಲ್ಲ.',hi:'अनिल = 20%। भावना = 12.5%। कम बाउंस का मतलब बेहतर दर नहीं।'}},
+{id:5,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'Last month: 12 bounces out of 60 accounts. This month: 12 bounces out of 80 accounts. What happened to the Bounce Rate?',kn:'ಕಳೆದ ತಿಂಗಳು: 60 ರಲ್ಲಿ 12 ಬೌನ್ಸ್. ಈ ತಿಂಗಳು: 80 ರಲ್ಲಿ 12 ಬೌನ್ಸ್. ಬೌನ್ಸ್ ದರಕ್ಕೆ ಏನಾಯಿತು?',hi:'पिछला महीना: 60 में 12 बाउंस। इस महीने: 80 में 12 बाउंस। बाउंस दर का क्या हुआ?'},
+options:[{en:'Improved from 20% to 15%',kn:'20% ಇಂದ 15% ಗೆ ಸುಧಾರಿಸಿತು',hi:'20% से 15% सुधरी'},{en:'Worsened from 15% to 20%',kn:'15% ಇಂದ 20% ಗೆ ಕೆಟ್ಟಿತು',hi:'15% से 20% बिगड़ी'},{en:'Improved from 20% to 12%',kn:'20% ಇಂದ 12% ಗೆ ಸುಧಾರಿಸಿತು',hi:'20% से 12% सुधरी'},{en:'No change — still 12 bounces',kn:'ಬದಲಾವಣೆ ಇಲ್ಲ — ಇನ್ನೂ 12',hi:'कोई बदलाव नहीं — अब भी 12'}],correct:0,
+explanation:{en:'12 ÷ 60 = 20%. 12 ÷ 80 = 15%. Same bounces, bigger base — the rate drops.',kn:'12 ÷ 60 = 20%. 12 ÷ 80 = 15%. ಅದೇ ಬೌನ್ಸ್, ದೊಡ್ಡ ಆಧಾರ — ದರ ಕಡಿಮೆ.',hi:'12 ÷ 60 = 20%। 12 ÷ 80 = 15%। समान बाउंस, बड़ा आधार — दर घटी।'}},
+{id:6,type:'tricky',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'Branch has two ROs. RO A: 10% Bounce Rate on 100 accounts. RO B: 30% Bounce Rate on 20 accounts. What is the branch Bounce Rate?',kn:'ಶಾಖೆಯಲ್ಲಿ ಇಬ್ಬರು RO. RO A: 100 ಖಾತೆಗಳಲ್ಲಿ 10%. RO B: 20 ಖಾತೆಗಳಲ್ಲಿ 30%. ಶಾಖೆಯ ಬೌನ್ಸ್ ದರ ಎಷ್ಟು?',hi:'शाखा में दो RO। RO A: 100 खातों पर 10%। RO B: 20 खातों पर 30%। शाखा की बाउंस दर क्या है?'},
+options:[{en:'20%',kn:'20%',hi:'20%'},{en:'13.3%',kn:'13.3%',hi:'13.3%'},{en:'40%',kn:'40%',hi:'40%'},{en:'16%',kn:'16%',hi:'16%'}],correct:1,
+explanation:{en:'Bounces: A = 10, B = 6. Total 16 out of 120 = 13.3%. Trap: never average the two percentages (20%) when portfolio sizes differ.',kn:'A = 10, B = 6. ಒಟ್ಟು 120 ರಲ್ಲಿ 16 = 13.3%. ಗಾತ್ರ ಬೇರೆಯಾದಾಗ ಶೇಕಡಾ ಸರಾಸರಿ (20%) ತೆಗೆಯಬೇಡಿ.',hi:'A = 10, B = 6। कुल 120 में 16 = 13.3%। आकार अलग हो तो प्रतिशत का औसत (20%) न लें।'}},
+{id:7,type:'numerical',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'RO has 30 accounts with a 20% Bounce Rate. To bring it down to 10%, how many fewer bounces are needed?',kn:'RO ಗೆ 30 ಖಾತೆಗಳು, ಬೌನ್ಸ್ ದರ 20%. ಅದನ್ನು 10% ಗೆ ಇಳಿಸಲು ಎಷ್ಟು ಕಡಿಮೆ ಬೌನ್ಸ್ ಬೇಕು?',hi:'RO के 30 खाते, बाउंस दर 20%। इसे 10% करने के लिए कितने कम बाउंस चाहिए?'},
+options:[{en:'10',kn:'10',hi:'10'},{en:'6',kn:'6',hi:'6'},{en:'3',kn:'3',hi:'3'},{en:'2',kn:'2',hi:'2'}],correct:2,
+explanation:{en:'Now: 20% of 30 = 6. Target: 10% of 30 = 3. Need 6 − 3 = 3 fewer. "10" is the percentage-point gap, not accounts.',kn:'ಈಗ: 6. ಗುರಿ: 3. 3 ಕಡಿಮೆ ಬೇಕು. "10" ಶೇಕಡಾ ಅಂತರ, ಖಾತೆಗಳಲ್ಲ.',hi:'अभी: 6। लक्ष्य: 3। 3 कम चाहिए। "10" प्रतिशत अंतर है, खाते नहीं।'}},
+{id:8,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'20 accounts. Only one customer failed — his debit was tried twice this month and failed both times. What is the account-wise Bounce Rate?',kn:'20 ಖಾತೆಗಳು. ಒಬ್ಬ ಗ್ರಾಹಕ ಮಾತ್ರ ವಿಫಲ — ಈ ತಿಂಗಳು ಅವನ ಡೆಬಿಟ್ ಎರಡು ಬಾರಿ ಪ್ರಯತ್ನಿಸಿ ಎರಡೂ ವಿಫಲ. ಖಾತೆ-ವಾರ ಬೌನ್ಸ್ ದರ?',hi:'20 खाते। केवल एक ग्राहक विफल — इस महीने उसका डेबिट दो बार आज़माया, दोनों बार विफल। खाता-वार बाउंस दर?'},
+options:[{en:'2.5%',kn:'2.5%',hi:'2.5%'},{en:'0%',kn:'0%',hi:'0%'},{en:'10%',kn:'10%',hi:'10%'},{en:'5%',kn:'5%',hi:'5%'}],correct:3,
+explanation:{en:'Account-wise counts the account once: 1 ÷ 20 = 5%. Counting both attempts (10%) is a common mistake.',kn:'ಖಾತೆ-ವಾರ ಎಣಿಕೆಯಲ್ಲಿ ಖಾತೆ ಒಮ್ಮೆ: 1 ÷ 20 = 5%. ಎರಡೂ ಪ್ರಯತ್ನ ಎಣಿಸುವುದು (10%) ತಪ್ಪು.',hi:'खाता-वार में खाता एक बार गिना जाता है: 1 ÷ 20 = 5%। दोनों प्रयास गिनना (10%) गलती है।'}},
+{id:9,type:'numerical',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'Bounce Rate is 12% and 22 debits were successful. How many accounts were presented?',kn:'ಬೌನ್ಸ್ ದರ 12% ಮತ್ತು 22 ಡೆಬಿಟ್ ಯಶಸ್ವಿ. ಎಷ್ಟು ಖಾತೆಗಳನ್ನು ಕಳುಹಿಸಲಾಗಿತ್ತು?',hi:'बाउंस दर 12% है और 22 डेबिट सफल हुए। कितने खाते भेजे गए थे?'},
+options:[{en:'25',kn:'25',hi:'25'},{en:'34',kn:'34',hi:'34'},{en:'22',kn:'22',hi:'22'},{en:'24',kn:'24',hi:'24'}],correct:0,
+explanation:{en:'If 12% bounced, 88% succeeded. 22 = 88% of total → 22 ÷ 0.88 = 25. Check: 3 bounced out of 25 = 12%.',kn:'12% ಬೌನ್ಸ್ ಎಂದರೆ 88% ಯಶಸ್ವಿ. 22 ÷ 0.88 = 25.',hi:'12% बाउंस यानी 88% सफल। 22 ÷ 0.88 = 25।'}},
+{id:10,type:'truefalse',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'True or False: A 0% Bounce Rate means every customer paid on time.',kn:'ಸರಿ ಅಥವಾ ತಪ್ಪು: 0% ಬೌನ್ಸ್ ದರ ಎಂದರೆ ಪ್ರತಿ ಗ್ರಾಹಕರೂ ಸಮಯಕ್ಕೆ ಪಾವತಿಸಿದರು.',hi:'सही या गलत: 0% बाउंस दर का मतलब हर ग्राहक ने समय पर भुगतान किया।'},
+options:[{en:'True',kn:'ಸರಿ',hi:'सही'},{en:'False',kn:'ತಪ್ಪು',hi:'गलत'},{en:'—',kn:'—',hi:'—'},{en:'—',kn:'—',hi:'—'}],correct:1,
+explanation:{en:'False. Bounce Rate only covers auto-debits. Customers who pay manually can still pay late — that shows up in OTRR, not Bounce Rate.',kn:'ತಪ್ಪು. ಬೌನ್ಸ್ ದರ ಸ್ವಯಂ-ಡೆಬಿಟ್ ಮಾತ್ರ. ಕೈಯಾರೆ ಪಾವತಿಸುವವರು ತಡವಾಗಬಹುದು — ಅದು OTRR ನಲ್ಲಿ ಕಾಣುತ್ತದೆ.',hi:'गलत। बाउंस दर केवल ऑटो-डेबिट को देखती है। मैन्युअल भुगतान करने वाले देर कर सकते हैं — वह OTRR में दिखता है।'}},
+{id:11,type:'numerical',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'50 accounts, 5 bounced (10%). Next month 5 new accounts are added, all debits succeed, and the same 5 old accounts bounce again. New Bounce Rate?',kn:'50 ಖಾತೆಗಳು, 5 ಬೌನ್ಸ್ (10%). ಮುಂದಿನ ತಿಂಗಳು 5 ಹೊಸ ಖಾತೆಗಳು ಸೇರುತ್ತವೆ, ಎಲ್ಲಾ ಯಶಸ್ವಿ, ಅದೇ 5 ಹಳೆಯ ಖಾತೆ ಮತ್ತೆ ಬೌನ್ಸ್. ಹೊಸ ದರ?',hi:'50 खाते, 5 बाउंस (10%)। अगले महीने 5 नए खाते जुड़े, सभी सफल, वही 5 पुराने फिर बाउंस। नई दर?'},
+options:[{en:'10%',kn:'10%',hi:'10%'},{en:'9.1%',kn:'9.1%',hi:'9.1%'},{en:'8.3%',kn:'8.3%',hi:'8.3%'},{en:'5%',kn:'5%',hi:'5%'}],correct:1,
+explanation:{en:'5 ÷ 55 × 100 = 9.1%. The rate improved only because the base grew — the same customers are still bouncing.',kn:'5 ÷ 55 × 100 = 9.1%. ಆಧಾರ ಬೆಳೆದಿದ್ದರಿಂದ ಮಾತ್ರ ಸುಧಾರಣೆ — ಅದೇ ಗ್ರಾಹಕರು ಇನ್ನೂ ಬೌನ್ಸ್.',hi:'5 ÷ 55 × 100 = 9.1%। सुधार सिर्फ आधार बढ़ने से — वही ग्राहक अब भी बाउंस हो रहे हैं।'}},
+{id:12,type:'tricky',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'10 accounts, 1 bounced. Total EMI due ₹50,000; the bounced EMI was ₹20,000. Account-wise and amount-wise Bounce Rate?',kn:'10 ಖಾತೆಗಳು, 1 ಬೌನ್ಸ್. ಒಟ್ಟು EMI ₹50,000; ಬೌನ್ಸ್ ಆದ EMI ₹20,000. ಖಾತೆ-ವಾರ ಮತ್ತು ಮೊತ್ತ-ವಾರ ಬೌನ್ಸ್ ದರ?',hi:'10 खाते, 1 बाउंस। कुल EMI ₹50,000; बाउंस EMI ₹20,000। खाता-वार और राशि-वार बाउंस दर?'},
+options:[{en:'10% and 20%',kn:'10% ಮತ್ತು 20%',hi:'10% और 20%'},{en:'10% and 10%',kn:'10% ಮತ್ತು 10%',hi:'10% और 10%'},{en:'10% and 40%',kn:'10% ಮತ್ತು 40%',hi:'10% और 40%'},{en:'40% and 10%',kn:'40% ಮತ್ತು 10%',hi:'40% और 10%'}],correct:2,
+explanation:{en:'Account-wise: 1 ÷ 10 = 10%. Amount-wise: ₹20,000 ÷ ₹50,000 = 40%. One big-ticket bounce hurts amount-wise far more.',kn:'ಖಾತೆ-ವಾರ: 10%. ಮೊತ್ತ-ವಾರ: 20,000 ÷ 50,000 = 40%.',hi:'खाता-वार: 10%। राशि-वार: 20,000 ÷ 50,000 = 40%।'}},
+{id:13,type:'numerical',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'An RO says "Only 9 bounced, so my Bounce Rate is 9%." He has 120 accounts. What is his actual Bounce Rate?',kn:'RO ಹೇಳುತ್ತಾರೆ "ಕೇವಲ 9 ಬೌನ್ಸ್, ಹಾಗಾಗಿ ದರ 9%." ಅವರಿಗೆ 120 ಖಾತೆಗಳು. ನಿಜವಾದ ಬೌನ್ಸ್ ದರ?',hi:'RO कहता है "सिर्फ 9 बाउंस, तो मेरी दर 9% है।" उसके 120 खाते हैं। असली बाउंस दर?'},
+options:[{en:'12%',kn:'12%',hi:'12%'},{en:'13.3%',kn:'13.3%',hi:'13.3%'},{en:'9%',kn:'9%',hi:'9%'},{en:'7.5%',kn:'7.5%',hi:'7.5%'}],correct:3,
+explanation:{en:'9 ÷ 120 × 100 = 7.5%. A count is only a percentage when the base is exactly 100.',kn:'9 ÷ 120 × 100 = 7.5%. ಆಧಾರ 100 ಇದ್ದಾಗ ಮಾತ್ರ ಸಂಖ್ಯೆ = ಶೇಕಡಾ.',hi:'9 ÷ 120 × 100 = 7.5%। आधार 100 हो तभी संख्या = प्रतिशत।'}},
+{id:14,type:'truefalse',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'True or False: Halving the number of bounces always halves the Bounce Rate.',kn:'ಸರಿ ಅಥವಾ ತಪ್ಪು: ಬೌನ್ಸ್ ಸಂಖ್ಯೆ ಅರ್ಧವಾದರೆ ಬೌನ್ಸ್ ದರ ಯಾವಾಗಲೂ ಅರ್ಧವಾಗುತ್ತದೆ.',hi:'सही या गलत: बाउंस की संख्या आधी होने से बाउंस दर हमेशा आधी होती है।'},
+options:[{en:'True',kn:'ಸರಿ',hi:'सही'},{en:'False',kn:'ತಪ್ಪು',hi:'गलत'},{en:'—',kn:'—',hi:'—'},{en:'—',kn:'—',hi:'—'}],correct:1,
+explanation:{en:'False. Only if the number of accounts stays the same. If the portfolio also changes, the rate moves differently.',kn:'ತಪ್ಪು. ಖಾತೆಗಳ ಸಂಖ್ಯೆ ಅದೇ ಇದ್ದರೆ ಮಾತ್ರ.',hi:'गलत। केवल तब जब खातों की संख्या वही रहे।'}},
+{id:15,type:'tricky',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'RO has 60 accounts and wants a Bounce Rate UNDER 5%. What is the maximum number of bounces allowed?',kn:'RO ಗೆ 60 ಖಾತೆಗಳು, ಬೌನ್ಸ್ ದರ 5% ಕ್ಕಿಂತ ಕಡಿಮೆ ಬೇಕು. ಗರಿಷ್ಠ ಎಷ್ಟು ಬೌನ್ಸ್?',hi:'RO के 60 खाते, बाउंस दर 5% से कम चाहिए। अधिकतम कितने बाउंस?'},
+options:[{en:'2',kn:'2',hi:'2'},{en:'3',kn:'3',hi:'3'},{en:'5',kn:'5',hi:'5'},{en:'1',kn:'1',hi:'1'}],correct:0,
+explanation:{en:'5% of 60 = 3, but 3 bounces = exactly 5%, which is not UNDER 5%. So max is 2 (3.3%).',kn:'60 ರ 5% = 3, ಆದರೆ 3 = ನಿಖರವಾಗಿ 5%, ಕಡಿಮೆ ಅಲ್ಲ. ಗರಿಷ್ಠ 2 (3.3%).',hi:'60 का 5% = 3, पर 3 = ठीक 5%, कम नहीं। अधिकतम 2 (3.3%)।'}}
+],
+
+// ===== DAY 2 — OTRR TRAPS =====
+day2: [
+{id:1,type:'numerical',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'80 accounts had EMI due. 68 paid in full on or before the due date. What is the OTRR?',kn:'80 ಖಾತೆಗಳಿಗೆ EMI ಬಾಕಿ. 68 ನಿಗದಿತ ದಿನಾಂಕದೊಳಗೆ ಪೂರ್ಣ ಪಾವತಿಸಿದರು. OTRR ಎಷ್ಟು?',hi:'80 खातों की EMI देय थी। 68 ने देय तिथि तक पूरा भुगतान किया। OTRR क्या है?'},
+options:[{en:'80%',kn:'80%',hi:'80%'},{en:'85%',kn:'85%',hi:'85%'},{en:'15%',kn:'15%',hi:'15%'},{en:'68%',kn:'68%',hi:'68%'}],correct:1,
+explanation:{en:'68 ÷ 80 × 100 = 85%. (15% is the share that did NOT pay on time.)',kn:'68 ÷ 80 × 100 = 85%.',hi:'68 ÷ 80 × 100 = 85%।'}},
+{id:2,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'40 accounts due. 30 paid by auto-debit on the due date, 4 paid by UPI a day before, 6 paid 2 days late. What is the OTRR?',kn:'40 ಖಾತೆ ಬಾಕಿ. 30 ನಿಗದಿತ ದಿನ ಸ್ವಯಂ-ಡೆಬಿಟ್, 4 ಒಂದು ದಿನ ಮೊದಲು UPI, 6 ಎರಡು ದಿನ ತಡ. OTRR?',hi:'40 खाते देय। 30 ने देय तिथि पर ऑटो-डेबिट, 4 ने एक दिन पहले UPI, 6 ने 2 दिन देर से। OTRR?'},
+options:[{en:'90%',kn:'90%',hi:'90%'},{en:'75%',kn:'75%',hi:'75%'},{en:'85%',kn:'85%',hi:'85%'},{en:'100%',kn:'100%',hi:'100%'}],correct:2,
+explanation:{en:'On time = 30 + 4 = 34. 34 ÷ 40 = 85%. UPI counts (any channel). Late payers don\'t count even though they paid.',kn:'ಸಮಯಕ್ಕೆ = 30 + 4 = 34. 34 ÷ 40 = 85%. UPI ಎಣಿಕೆ; ತಡವಾದವರು ಎಣಿಕೆಯಲ್ಲ.',hi:'समय पर = 30 + 4 = 34। 34 ÷ 40 = 85%। UPI गिना जाता है; देर वाले नहीं।'}},
+{id:3,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'50 accounts due. By month end 45 had paid, but only 38 paid on or before the due date. What is the OTRR?',kn:'50 ಖಾತೆ ಬಾಕಿ. ತಿಂಗಳ ಕೊನೆಗೆ 45 ಪಾವತಿಸಿದ್ದರು, ಆದರೆ 38 ಮಾತ್ರ ನಿಗದಿತ ದಿನಾಂಕದೊಳಗೆ. OTRR?',hi:'50 खाते देय। महीने के अंत तक 45 ने भुगतान किया, पर केवल 38 ने देय तिथि तक। OTRR?'},
+options:[{en:'84%',kn:'84%',hi:'84%'},{en:'10%',kn:'10%',hi:'10%'},{en:'90%',kn:'90%',hi:'90%'},{en:'76%',kn:'76%',hi:'76%'}],correct:3,
+explanation:{en:'38 ÷ 50 = 76%. 90% is the collection rate, not OTRR. On-time means by the due date.',kn:'38 ÷ 50 = 76%. 90% ಸಂಗ್ರಹ ದರ, OTRR ಅಲ್ಲ.',hi:'38 ÷ 50 = 76%। 90% संग्रह दर है, OTRR नहीं।'}},
+{id:4,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'Rule: only FULL EMI paid by the due date counts. 20 due. 15 paid full on time, 2 paid partial on time, 3 paid late. OTRR?',kn:'ನಿಯಮ: ನಿಗದಿತ ದಿನಾಂಕದೊಳಗೆ ಪೂರ್ಣ EMI ಮಾತ್ರ ಎಣಿಕೆ. 20 ಬಾಕಿ. 15 ಪೂರ್ಣ ಸಮಯಕ್ಕೆ, 2 ಭಾಗಶಃ ಸಮಯಕ್ಕೆ, 3 ತಡ. OTRR?',hi:'नियम: देय तिथि तक पूरी EMI ही गिनी जाती है। 20 देय। 15 पूरी समय पर, 2 आंशिक समय पर, 3 देर से। OTRR?'},
+options:[{en:'75%',kn:'75%',hi:'75%'},{en:'85%',kn:'85%',hi:'85%'},{en:'80%',kn:'80%',hi:'80%'},{en:'100%',kn:'100%',hi:'100%'}],correct:0,
+explanation:{en:'Only 15 meet the rule. 15 ÷ 20 = 75%. Partial payments don\'t count under a full-EMI rule.',kn:'15 ಮಾತ್ರ ನಿಯಮ ಪೂರೈಸುತ್ತವೆ. 15 ÷ 20 = 75%.',hi:'केवल 15 नियम पूरा करते हैं। 15 ÷ 20 = 75%।'}},
+{id:5,type:'numerical',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'OTRR is 90% on 70 accounts. How many accounts did NOT pay on time?',kn:'70 ಖಾತೆಗಳಲ್ಲಿ OTRR 90%. ಎಷ್ಟು ಖಾತೆಗಳು ಸಮಯಕ್ಕೆ ಪಾವತಿಸಲಿಲ್ಲ?',hi:'70 खातों पर OTRR 90%। कितने खातों ने समय पर भुगतान नहीं किया?'},
+options:[{en:'63',kn:'63',hi:'63'},{en:'7',kn:'7',hi:'7'},{en:'9',kn:'9',hi:'9'},{en:'10',kn:'10',hi:'10'}],correct:1,
+explanation:{en:'Not on time = 10% of 70 = 7. (63 is the on-time count.)',kn:'ಸಮಯಕ್ಕೆ ಅಲ್ಲ = 70 ರ 10% = 7.',hi:'समय पर नहीं = 70 का 10% = 7।'}},
+{id:6,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'RO Ravi: 18 of 20 paid on time. RO Meena: 85 of 100 paid on time. Who has the better OTRR?',kn:'RO ರವಿ: 20 ರಲ್ಲಿ 18 ಸಮಯಕ್ಕೆ. RO ಮೀನಾ: 100 ರಲ್ಲಿ 85 ಸಮಯಕ್ಕೆ. ಯಾರ OTRR ಉತ್ತಮ?',hi:'RO रवि: 20 में 18 समय पर। RO मीना: 100 में 85 समय पर। किसका OTRR बेहतर?'},
+options:[{en:'Cannot compare',kn:'ಹೋಲಿಸಲಾಗದು',hi:'तुलना नहीं हो सकती'},{en:'Meena — 85 customers paid',kn:'ಮೀನಾ — 85 ಪಾವತಿ',hi:'मीना — 85 ने भुगतान किया'},{en:'Ravi — 90% vs 85%',kn:'ರವಿ — 90% vs 85%',hi:'रवि — 90% बनाम 85%'},{en:'Equal',kn:'ಸಮಾನ',hi:'बराबर'}],correct:2,
+explanation:{en:'Ravi = 18 ÷ 20 = 90%. Meena = 85 ÷ 100 = 85%. Bigger count ≠ better rate.',kn:'ರವಿ = 90%. ಮೀನಾ = 85%.',hi:'रवि = 90%। मीना = 85%।'}},
+{id:7,type:'tricky',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'Team: RO A has 90% OTRR on 100 accounts. RO B has 60% OTRR on 50 accounts. What is the team OTRR?',kn:'ತಂಡ: RO A 100 ಖಾತೆಗಳಲ್ಲಿ 90%. RO B 50 ಖಾತೆಗಳಲ್ಲಿ 60%. ತಂಡದ OTRR?',hi:'टीम: RO A 100 खातों पर 90%। RO B 50 खातों पर 60%। टीम OTRR?'},
+options:[{en:'85%',kn:'85%',hi:'85%'},{en:'70%',kn:'70%',hi:'70%'},{en:'75%',kn:'75%',hi:'75%'},{en:'80%',kn:'80%',hi:'80%'}],correct:3,
+explanation:{en:'On time: A = 90, B = 30. 120 ÷ 150 = 80%. The simple average (75%) is the trap.',kn:'A = 90, B = 30. 120 ÷ 150 = 80%. ಸರಳ ಸರಾಸರಿ (75%) ತಪ್ಪು.',hi:'A = 90, B = 30। 120 ÷ 150 = 80%। साधारण औसत (75%) गलत है।'}},
+{id:8,type:'numerical',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'Target OTRR is 90%. 60 accounts due, 50 paid on time. How many more on-time payments were needed?',kn:'ಗುರಿ OTRR 90%. 60 ಬಾಕಿ, 50 ಸಮಯಕ್ಕೆ. ಇನ್ನೆಷ್ಟು ಸಮಯಕ್ಕೆ ಪಾವತಿ ಬೇಕಿತ್ತು?',hi:'लक्ष्य OTRR 90%। 60 देय, 50 समय पर। और कितने समय पर भुगतान चाहिए थे?'},
+options:[{en:'4',kn:'4',hi:'4'},{en:'5',kn:'5',hi:'5'},{en:'6',kn:'6',hi:'6'},{en:'10',kn:'10',hi:'10'}],correct:0,
+explanation:{en:'90% of 60 = 54. 54 − 50 = 4 more.',kn:'60 ರ 90% = 54. 54 − 50 = 4.',hi:'60 का 90% = 54। 54 − 50 = 4।'}},
+{id:9,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'OTRR was 80% on 50 accounts last month and 80% on 60 accounts this month. Did more customers pay on time?',kn:'ಕಳೆದ ತಿಂಗಳು 50 ಖಾತೆಯಲ್ಲಿ 80%, ಈ ತಿಂಗಳು 60 ಖಾತೆಯಲ್ಲಿ 80%. ಹೆಚ್ಚು ಗ್ರಾಹಕರು ಸಮಯಕ್ಕೆ ಪಾವತಿಸಿದರೇ?',hi:'पिछले महीने 50 खातों पर 80%, इस महीने 60 खातों पर 80%। क्या अधिक ग्राहकों ने समय पर भुगतान किया?'},
+options:[{en:'No — same 80%',kn:'ಇಲ್ಲ — ಅದೇ 80%',hi:'नहीं — वही 80%'},{en:'Yes — 8 more (40 → 48)',kn:'ಹೌದು — 8 ಹೆಚ್ಚು (40 → 48)',hi:'हां — 8 अधिक (40 → 48)'},{en:'Yes — 10 more',kn:'ಹೌದು — 10 ಹೆಚ್ಚು',hi:'हां — 10 अधिक'},{en:'No — fewer paid',kn:'ಇಲ್ಲ — ಕಡಿಮೆ',hi:'नहीं — कम'}],correct:1,
+explanation:{en:'80% of 50 = 40. 80% of 60 = 48. Same rate, 8 more customers on time.',kn:'50 ರ 80% = 40. 60 ರ 80% = 48. 8 ಹೆಚ್ಚು.',hi:'50 का 80% = 40। 60 का 80% = 48। 8 अधिक।'}},
+{id:10,type:'truefalse',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'True or False: OTRR + Bounce Rate always equals 100%.',kn:'ಸರಿ ಅಥವಾ ತಪ್ಪು: OTRR + ಬೌನ್ಸ್ ದರ ಯಾವಾಗಲೂ 100%.',hi:'सही या गलत: OTRR + बाउंस दर हमेशा 100% होता है।'},
+options:[{en:'True',kn:'ಸರಿ',hi:'सही'},{en:'False',kn:'ತಪ್ಪು',hi:'गलत'},{en:'—',kn:'—',hi:'—'},{en:'—',kn:'—',hi:'—'}],correct:1,
+explanation:{en:'False. A bounced customer can still pay on time by UPI or cash, and a customer not on auto-debit can pay late without bouncing.',kn:'ತಪ್ಪು. ಬೌನ್ಸ್ ಆದವರು UPI/ನಗದಿನಲ್ಲಿ ಸಮಯಕ್ಕೆ ಪಾವತಿಸಬಹುದು.',hi:'गलत। बाउंस ग्राहक UPI/नकद से समय पर भुगतान कर सकता है।'}},
+{id:11,type:'numerical',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'If 2 more customers had paid on time, OTRR would have gone from 80% to 90%. How many accounts were due?',kn:'ಇನ್ನೂ 2 ಗ್ರಾಹಕರು ಸಮಯಕ್ಕೆ ಪಾವತಿಸಿದ್ದರೆ OTRR 80% ಇಂದ 90% ಆಗುತ್ತಿತ್ತು. ಎಷ್ಟು ಖಾತೆ ಬಾಕಿ ಇದ್ದವು?',hi:'अगर 2 और ग्राहक समय पर भुगतान करते, तो OTRR 80% से 90% हो जाता। कितने खाते देय थे?'},
+options:[{en:'2',kn:'2',hi:'2'},{en:'10',kn:'10',hi:'10'},{en:'20',kn:'20',hi:'20'},{en:'40',kn:'40',hi:'40'}],correct:2,
+explanation:{en:'2 customers = 10 percentage points, so 1 customer = 5%. Total = 100 ÷ 5 = 20 accounts.',kn:'2 ಗ್ರಾಹಕರು = 10%, 1 = 5%. ಒಟ್ಟು = 20.',hi:'2 ग्राहक = 10%, 1 = 5%। कुल = 20।'}},
+{id:12,type:'tricky',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'RO has 30 accounts, but 5 are fully prepaid with no EMI due this month. 20 paid on time. What is the OTRR?',kn:'RO ಗೆ 30 ಖಾತೆ, ಆದರೆ 5 ಪೂರ್ಣ ಮುಂಗಡ ಪಾವತಿ — ಈ ತಿಂಗಳು EMI ಇಲ್ಲ. 20 ಸಮಯಕ್ಕೆ. OTRR?',hi:'RO के 30 खाते, पर 5 पूरी तरह प्रीपेड — इस महीने EMI नहीं। 20 समय पर। OTRR?'},
+options:[{en:'83.3%',kn:'83.3%',hi:'83.3%'},{en:'100%',kn:'100%',hi:'100%'},{en:'66.7%',kn:'66.7%',hi:'66.7%'},{en:'80%',kn:'80%',hi:'80%'}],correct:3,
+explanation:{en:'Only accounts with EMI due count: 30 − 5 = 25. 20 ÷ 25 = 80%. Using 30 (66.7%) is the trap.',kn:'EMI ಬಾಕಿ ಖಾತೆ ಮಾತ್ರ: 25. 20 ÷ 25 = 80%.',hi:'केवल देय EMI वाले खाते: 25। 20 ÷ 25 = 80%।'}},
+{id:13,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'A customer\'s auto-debit bounced on the due date, but he paid the full EMI by UPI the same day. How is he counted?',kn:'ಗ್ರಾಹಕರ ಸ್ವಯಂ-ಡೆಬಿಟ್ ನಿಗದಿತ ದಿನ ಬೌನ್ಸ್, ಆದರೆ ಅದೇ ದಿನ UPI ಮೂಲಕ ಪೂರ್ಣ EMI ಪಾವತಿ. ಹೇಗೆ ಎಣಿಕೆ?',hi:'ग्राहक का ऑटो-डेबिट देय तिथि पर बाउंस, पर उसी दिन UPI से पूरी EMI भुगतान। कैसे गिना जाएगा?'},
+options:[{en:'Both a bounce AND on-time',kn:'ಬೌನ್ಸ್ ಮತ್ತು ಸಮಯಕ್ಕೆ ಎರಡೂ',hi:'बाउंस और समय पर दोनों'},{en:'Neither',kn:'ಯಾವುದೂ ಅಲ್ಲ',hi:'कोई नहीं'},{en:'Bounce only',kn:'ಬೌನ್ಸ್ ಮಾತ್ರ',hi:'केवल बाउंस'},{en:'On-time only',kn:'ಸಮಯಕ್ಕೆ ಮಾತ್ರ',hi:'केवल समय पर'}],correct:0,
+explanation:{en:'The debit failed → counts in Bounce Rate. Full EMI paid by the due date → counts in OTRR. One customer, two metrics.',kn:'ಡೆಬಿಟ್ ವಿಫಲ → ಬೌನ್ಸ್. ದಿನಾಂಕದೊಳಗೆ ಪೂರ್ಣ ಪಾವತಿ → OTRR.',hi:'डेबिट विफल → बाउंस। तिथि तक पूरा भुगतान → OTRR।'}},
+{id:14,type:'truefalse',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'True or False: OTRR of 95% on 40 accounts means exactly 2 customers missed the due date.',kn:'ಸರಿ ಅಥವಾ ತಪ್ಪು: 40 ಖಾತೆಗಳಲ್ಲಿ OTRR 95% ಎಂದರೆ ನಿಖರವಾಗಿ 2 ಗ್ರಾಹಕರು ನಿಗದಿತ ದಿನಾಂಕ ತಪ್ಪಿಸಿದರು.',hi:'सही या गलत: 40 खातों पर OTRR 95% का मतलब ठीक 2 ग्राहकों ने देय तिथि चूकी।'},
+options:[{en:'True',kn:'ಸರಿ',hi:'सही'},{en:'False',kn:'ತಪ್ಪು',hi:'गलत'},{en:'—',kn:'—',hi:'—'},{en:'—',kn:'—',hi:'—'}],correct:0,
+explanation:{en:'True. 5% of 40 = 2 customers not on time.',kn:'ಸರಿ. 40 ರ 5% = 2.',hi:'सही। 40 का 5% = 2।'}},
+{id:15,type:'tricky',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'10 accounts due. 9 small accounts paid ₹45,000 on time. 1 big account (₹55,000 EMI) paid late. Account-wise and amount-wise OTRR?',kn:'10 ಬಾಕಿ. 9 ಸಣ್ಣ ಖಾತೆ ₹45,000 ಸಮಯಕ್ಕೆ. 1 ದೊಡ್ಡ ಖಾತೆ (₹55,000) ತಡ. ಖಾತೆ-ವಾರ ಮತ್ತು ಮೊತ್ತ-ವಾರ OTRR?',hi:'10 देय। 9 छोटे खाते ₹45,000 समय पर। 1 बड़ा खाता (₹55,000) देर से। खाता-वार और राशि-वार OTRR?'},
+options:[{en:'90% and 90%',kn:'90% ಮತ್ತು 90%',hi:'90% और 90%'},{en:'90% and 45%',kn:'90% ಮತ್ತು 45%',hi:'90% और 45%'},{en:'45% and 90%',kn:'45% ಮತ್ತು 90%',hi:'45% और 90%'},{en:'90% and 55%',kn:'90% ಮತ್ತು 55%',hi:'90% और 55%'}],correct:1,
+explanation:{en:'Account-wise: 9 ÷ 10 = 90%. Amount-wise: ₹45,000 ÷ ₹1,00,000 = 45%. A great account-wise number can hide a weak amount-wise one.',kn:'ಖಾತೆ-ವಾರ: 90%. ಮೊತ್ತ-ವಾರ: 45,000 ÷ 1,00,000 = 45%.',hi:'खाता-वार: 90%। राशि-वार: 45,000 ÷ 1,00,000 = 45%।'}}
+],
+
+// ===== DAY 3 — BOUNCE + OTRR COMBINED TRAPS =====
+day3: [
+{id:1,type:'numerical',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'100 accounts, all on auto-debit. 15 bounced; 5 of them paid by UPI before the due date ended. Everyone else was debited on time. Bounce Rate and OTRR?',kn:'100 ಖಾತೆ, ಎಲ್ಲಾ ಸ್ವಯಂ-ಡೆಬಿಟ್. 15 ಬೌನ್ಸ್; ಅವರಲ್ಲಿ 5 ದಿನಾಂಕದೊಳಗೆ UPI ಪಾವತಿ. ಉಳಿದವರು ಸಮಯಕ್ಕೆ ಡೆಬಿಟ್. ಬೌನ್ಸ್ ದರ ಮತ್ತು OTRR?',hi:'100 खाते, सभी ऑटो-डेबिट पर। 15 बाउंस; उनमें से 5 ने देय तिथि तक UPI से भुगतान किया। बाकी सब समय पर डेबिट। बाउंस दर और OTRR?'},
+options:[{en:'10% and 85%',kn:'10% ಮತ್ತು 85%',hi:'10% और 85%'},{en:'15% and 85%',kn:'15% ಮತ್ತು 85%',hi:'15% और 85%'},{en:'15% and 90%',kn:'15% ಮತ್ತು 90%',hi:'15% और 90%'},{en:'10% and 90%',kn:'10% ಮತ್ತು 90%',hi:'10% और 90%'}],correct:2,
+explanation:{en:'Bounce = 15 ÷ 100 = 15% (recovery doesn\'t remove it). OTRR = (85 + 5) ÷ 100 = 90%.',kn:'ಬೌನ್ಸ್ = 15%. OTRR = (85 + 5) ÷ 100 = 90%.',hi:'बाउंस = 15%। OTRR = (85 + 5) ÷ 100 = 90%।'}},
+{id:2,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'50 accounts, all on auto-debit, every successful debit was on time. Bounce Rate 20%, OTRR 80%. What does this tell you?',kn:'50 ಖಾತೆ, ಎಲ್ಲಾ ಸ್ವಯಂ-ಡೆಬಿಟ್, ಯಶಸ್ವಿ ಡೆಬಿಟ್ ಎಲ್ಲಾ ಸಮಯಕ್ಕೆ. ಬೌನ್ಸ್ 20%, OTRR 80%. ಇದು ಏನು ಹೇಳುತ್ತದೆ?',hi:'50 खाते, सभी ऑटो-डेबिट, हर सफल डेबिट समय पर। बाउंस 20%, OTRR 80%। इससे क्या पता चलता है?'},
+options:[{en:'Half of them paid on time',kn:'ಅರ್ಧ ಸಮಯಕ್ಕೆ',hi:'आधे ने समय पर'},{en:'The data is impossible',kn:'ಡೇಟಾ ಅಸಾಧ್ಯ',hi:'डेटा असंभव है'},{en:'All bounced customers paid on time',kn:'ಎಲ್ಲಾ ಬೌನ್ಸ್ ಗ್ರಾಹಕರು ಸಮಯಕ್ಕೆ ಪಾವತಿಸಿದರು',hi:'सभी बाउंस ग्राहकों ने समय पर भुगतान किया'},{en:'None of the 10 bounced customers paid on time',kn:'10 ಬೌನ್ಸ್ ಗ್ರಾಹಕರಲ್ಲಿ ಯಾರೂ ಸಮಯಕ್ಕೆ ಪಾವತಿಸಲಿಲ್ಲ',hi:'10 बाउंस ग्राहकों में से किसी ने समय पर भुगतान नहीं किया'}],correct:3,
+explanation:{en:'40 debits succeeded = 80% OTRR exactly. So zero of the 10 bounced customers recovered before the due date — follow-up was missing.',kn:'40 ಯಶಸ್ವಿ = 80%. 10 ಬೌನ್ಸ್‌ನಲ್ಲಿ ಯಾರೂ ಸಮಯಕ್ಕೆ ವಸೂಲಾಗಲಿಲ್ಲ.',hi:'40 सफल = ठीक 80%। 10 बाउंस में से कोई समय पर वसूल नहीं हुआ।'}},
+{id:3,type:'numerical',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'60 accounts on auto-debit. 9 bounced. 3 of the bounced paid cash before the due date ended. All others debited on time. OTRR?',kn:'60 ಖಾತೆ ಸ್ವಯಂ-ಡೆಬಿಟ್. 9 ಬೌನ್ಸ್. ಅವರಲ್ಲಿ 3 ದಿನಾಂಕದೊಳಗೆ ನಗದು. ಉಳಿದವರು ಸಮಯಕ್ಕೆ. OTRR?',hi:'60 खाते ऑटो-डेबिट पर। 9 बाउंस। उनमें से 3 ने तिथि तक नकद दिया। बाकी समय पर। OTRR?'},
+options:[{en:'90%',kn:'90%',hi:'90%'},{en:'95%',kn:'95%',hi:'95%'},{en:'80%',kn:'80%',hi:'80%'},{en:'85%',kn:'85%',hi:'85%'}],correct:0,
+explanation:{en:'On time = 51 debited + 3 cash = 54. 54 ÷ 60 = 90%.',kn:'ಸಮಯಕ್ಕೆ = 51 + 3 = 54. 54 ÷ 60 = 90%.',hi:'समय पर = 51 + 3 = 54। 54 ÷ 60 = 90%।'}},
+{id:4,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'RO A: Bounce 10%, OTRR 92%. RO B: Bounce 5%, OTRR 88%. Who got more customers to pay on time?',kn:'RO A: ಬೌನ್ಸ್ 10%, OTRR 92%. RO B: ಬೌನ್ಸ್ 5%, OTRR 88%. ಯಾರು ಹೆಚ್ಚು ಗ್ರಾಹಕರನ್ನು ಸಮಯಕ್ಕೆ ಪಾವತಿಸುವಂತೆ ಮಾಡಿದರು (ಶೇಕಡಾ)?',hi:'RO A: बाउंस 10%, OTRR 92%। RO B: बाउंस 5%, OTRR 88%। किसने अधिक ग्राहकों (प्रतिशत) से समय पर भुगतान कराया?'},
+options:[{en:'RO B — lower bounce',kn:'RO B — ಕಡಿಮೆ ಬೌನ್ಸ್',hi:'RO B — कम बाउंस'},{en:'RO A — higher OTRR',kn:'RO A — ಹೆಚ್ಚು OTRR',hi:'RO A — अधिक OTRR'},{en:'Both equal',kn:'ಸಮಾನ',hi:'बराबर'},{en:'Cannot tell',kn:'ಹೇಳಲಾಗದು',hi:'कह नहीं सकते'}],correct:1,
+explanation:{en:'On-time payment is measured by OTRR. A (92%) beats B (88%) — A recovered his bounces fast. Lower bounce alone doesn\'t win.',kn:'ಸಮಯಕ್ಕೆ ಪಾವತಿ = OTRR. A (92%) > B (88%).',hi:'समय पर भुगतान = OTRR। A (92%) > B (88%)।'}},
+{id:5,type:'numerical',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'40 accounts on auto-debit, all successful debits on time. Bounce Rate 25%, OTRR 85%. How many bounced customers still paid on time?',kn:'40 ಖಾತೆ ಸ್ವಯಂ-ಡೆಬಿಟ್, ಯಶಸ್ವಿ ಡೆಬಿಟ್ ಸಮಯಕ್ಕೆ. ಬೌನ್ಸ್ 25%, OTRR 85%. ಎಷ್ಟು ಬೌನ್ಸ್ ಗ್ರಾಹಕರು ಸಮಯಕ್ಕೆ ಪಾವತಿಸಿದರು?',hi:'40 खाते ऑटो-डेबिट पर, सफल डेबिट समय पर। बाउंस 25%, OTRR 85%। कितने बाउंस ग्राहकों ने फिर भी समय पर भुगतान किया?'},
+options:[{en:'10',kn:'10',hi:'10'},{en:'15',kn:'15',hi:'15'},{en:'4',kn:'4',hi:'4'},{en:'6',kn:'6',hi:'6'}],correct:2,
+explanation:{en:'Bounced = 10. On time = 34. Debited on time = 30. So 34 − 30 = 4 bounced customers recovered on time.',kn:'ಬೌನ್ಸ್ = 10. ಸಮಯಕ್ಕೆ = 34. ಡೆಬಿಟ್ = 30. 34 − 30 = 4.',hi:'बाउंस = 10। समय पर = 34। डेबिट = 30। 34 − 30 = 4।'}},
+{id:6,type:'numerical',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'80 accounts on auto-debit. Bounced customers never pay on time. If bounces drop from 12 to 6, OTRR moves from ___ to ___?',kn:'80 ಖಾತೆ ಸ್ವಯಂ-ಡೆಬಿಟ್. ಬೌನ್ಸ್ ಗ್ರಾಹಕರು ಸಮಯಕ್ಕೆ ಪಾವತಿಸುವುದಿಲ್ಲ. ಬೌನ್ಸ್ 12 ರಿಂದ 6 ಆದರೆ OTRR ___ ಇಂದ ___?',hi:'80 खाते ऑटो-डेबिट पर। बाउंस ग्राहक समय पर भुगतान नहीं करते। बाउंस 12 से 6 हों तो OTRR ___ से ___?'},
+options:[{en:'85% to 90%',kn:'85% ಇಂದ 90%',hi:'85% से 90%'},{en:'15% to 7.5%',kn:'15% ಇಂದ 7.5%',hi:'15% से 7.5%'},{en:'No change',kn:'ಬದಲಾವಣೆ ಇಲ್ಲ',hi:'कोई बदलाव नहीं'},{en:'85% to 92.5%',kn:'85% ಇಂದ 92.5%',hi:'85% से 92.5%'}],correct:3,
+explanation:{en:'Before: 68 ÷ 80 = 85%. After: 74 ÷ 80 = 92.5%. (15% → 7.5% is the Bounce Rate, not OTRR.)',kn:'ಮೊದಲು: 68 ÷ 80 = 85%. ನಂತರ: 74 ÷ 80 = 92.5%.',hi:'पहले: 68 ÷ 80 = 85%। बाद में: 74 ÷ 80 = 92.5%।'}},
+{id:7,type:'truefalse',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'True or False: An RO can have a HIGHER Bounce Rate but a BETTER OTRR than another RO.',kn:'ಸರಿ ಅಥವಾ ತಪ್ಪು: ಒಬ್ಬ RO ಗೆ ಹೆಚ್ಚು ಬೌನ್ಸ್ ದರ ಇದ್ದರೂ ಇನ್ನೊಬ್ಬರಿಗಿಂತ ಉತ್ತಮ OTRR ಇರಬಹುದು.',hi:'सही या गलत: एक RO की बाउंस दर अधिक होने पर भी उसका OTRR दूसरे से बेहतर हो सकता है।'},
+options:[{en:'True',kn:'ಸರಿ',hi:'सही'},{en:'False',kn:'ತಪ್ಪು',hi:'गलत'},{en:'—',kn:'—',hi:'—'},{en:'—',kn:'—',hi:'—'}],correct:0,
+explanation:{en:'True. Strong same-day follow-up turns bounces into on-time payments. Bounce shows the problem; OTRR shows the fix.',kn:'ಸರಿ. ತ್ವರಿತ ಫಾಲೋ-ಅಪ್ ಬೌನ್ಸ್ ಅನ್ನು ಸಮಯಕ್ಕೆ ಪಾವತಿಯಾಗಿ ಮಾಡುತ್ತದೆ.',hi:'सही। तुरंत फॉलो-अप बाउंस को समय पर भुगतान में बदल देता है।'}},
+{id:8,type:'scenario',difficulty:{en:'Easy',kn:'ಸುಲಭ',hi:'आसान'},
+q:{en:'A customer\'s auto-debit bounced and he paid 3 days after the due date. What is the impact?',kn:'ಗ್ರಾಹಕರ ಸ್ವಯಂ-ಡೆಬಿಟ್ ಬೌನ್ಸ್, ನಿಗದಿತ ದಿನಾಂಕದ 3 ದಿನ ನಂತರ ಪಾವತಿ. ಪರಿಣಾಮ?',hi:'ग्राहक का ऑटो-डेबिट बाउंस, देय तिथि के 3 दिन बाद भुगतान। प्रभाव?'},
+options:[{en:'Counts as bounce, and NOT on-time',kn:'ಬೌನ್ಸ್ ಎಣಿಕೆ, ಸಮಯಕ್ಕೆ ಅಲ್ಲ',hi:'बाउंस गिना, समय पर नहीं'},{en:'Bounce is cancelled since he paid',kn:'ಪಾವತಿಸಿದ್ದರಿಂದ ಬೌನ್ಸ್ ರದ್ದು',hi:'भुगतान से बाउंस रद्द'},{en:'Counts as on-time since he paid this month',kn:'ಈ ತಿಂಗಳು ಪಾವತಿಸಿದ್ದರಿಂದ ಸಮಯಕ್ಕೆ',hi:'इस महीने भुगतान से समय पर'},{en:'No impact on either',kn:'ಯಾವುದರ ಮೇಲೂ ಪರಿಣಾಮ ಇಲ್ಲ',hi:'किसी पर असर नहीं'}],correct:0,
+explanation:{en:'The debit failed → bounce. He paid after the due date → not on-time. Hurts both metrics.',kn:'ಡೆಬಿಟ್ ವಿಫಲ → ಬೌನ್ಸ್. ದಿನಾಂಕದ ನಂತರ → ಸಮಯಕ್ಕೆ ಅಲ್ಲ.',hi:'डेबिट विफल → बाउंस। तिथि के बाद → समय पर नहीं।'}},
+{id:9,type:'numerical',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'Area office: 200 accounts on auto-debit, Bounce Rate 10%. Half of the bounced customers paid before the due date ended. All other debits were on time. OTRR?',kn:'ಏರಿಯಾ: 200 ಖಾತೆ ಸ್ವಯಂ-ಡೆಬಿಟ್, ಬೌನ್ಸ್ 10%. ಬೌನ್ಸ್ ಆದವರಲ್ಲಿ ಅರ್ಧ ದಿನಾಂಕದೊಳಗೆ ಪಾವತಿ. ಉಳಿದವು ಸಮಯಕ್ಕೆ. OTRR?',hi:'एरिया: 200 खाते ऑटो-डेबिट पर, बाउंस 10%। बाउंस ग्राहकों में से आधे ने तिथि तक भुगतान किया। बाकी समय पर। OTRR?'},
+options:[{en:'90%',kn:'90%',hi:'90%'},{en:'95%',kn:'95%',hi:'95%'},{en:'85%',kn:'85%',hi:'85%'},{en:'100%',kn:'100%',hi:'100%'}],correct:1,
+explanation:{en:'Bounced = 20, recovered on time = 10. On time = 180 + 10 = 190. 190 ÷ 200 = 95%.',kn:'ಬೌನ್ಸ್ = 20, ವಸೂಲಿ = 10. 190 ÷ 200 = 95%.',hi:'बाउंस = 20, वसूल = 10। 190 ÷ 200 = 95%।'}},
+{id:10,type:'scenario',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'50 accounts, target OTRR 90% or more. 8 bounced; 2 of them already paid by UPI on time; all other debits were on time. How many more of the bounced must pay before the due date ends?',kn:'50 ಖಾತೆ, ಗುರಿ OTRR ≥ 90%. 8 ಬೌನ್ಸ್; 2 ಈಗಾಗಲೇ UPI ಮೂಲಕ ಸಮಯಕ್ಕೆ; ಉಳಿದ ಡೆಬಿಟ್ ಸಮಯಕ್ಕೆ. ಇನ್ನೂ ಎಷ್ಟು ಬೌನ್ಸ್ ಗ್ರಾಹಕರು ದಿನಾಂಕದೊಳಗೆ ಪಾವತಿಸಬೇಕು?',hi:'50 खाते, लक्ष्य OTRR ≥ 90%। 8 बाउंस; 2 पहले ही UPI से समय पर; बाकी डेबिट समय पर। और कितने बाउंस ग्राहकों को तिथि तक भुगतान करना होगा?'},
+options:[{en:'5',kn:'5',hi:'5'},{en:'6',kn:'6',hi:'6'},{en:'1',kn:'1',hi:'1'},{en:'3',kn:'3',hi:'3'}],correct:2,
+explanation:{en:'Need 90% of 50 = 45. Now on time = 42 + 2 = 44. Just 1 more.',kn:'50 ರ 90% = 45. ಈಗ = 42 + 2 = 44. ಇನ್ನೂ 1.',hi:'50 का 90% = 45। अभी = 42 + 2 = 44। बस 1 और।'}},
+{id:11,type:'tricky',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'RO reports: "57 of my 60 customers paid this month, so OTRR is 95%." But 6 of those 57 paid after the due date. Real OTRR?',kn:'RO ವರದಿ: "60 ರಲ್ಲಿ 57 ಈ ತಿಂಗಳು ಪಾವತಿಸಿದರು, OTRR 95%." ಆದರೆ 57 ರಲ್ಲಿ 6 ದಿನಾಂಕದ ನಂತರ. ನಿಜವಾದ OTRR?',hi:'RO रिपोर्ट: "60 में से 57 ने इस महीने भुगतान किया, OTRR 95%।" पर 57 में से 6 ने तिथि के बाद। असली OTRR?'},
+options:[{en:'10%',kn:'10%',hi:'10%'},{en:'95%',kn:'95%',hi:'95%'},{en:'90%',kn:'90%',hi:'90%'},{en:'85%',kn:'85%',hi:'85%'}],correct:3,
+explanation:{en:'On time = 57 − 6 = 51. 51 ÷ 60 = 85%. "Paid this month" is collection, not on-time.',kn:'ಸಮಯಕ್ಕೆ = 51. 51 ÷ 60 = 85%.',hi:'समय पर = 51। 51 ÷ 60 = 85%।'}},
+{id:12,type:'tricky',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'Two ROs\' portfolios are merged. A: 40 accounts, Bounce 10%. B: 60 accounts, Bounce 20%. Combined Bounce Rate?',kn:'ಇಬ್ಬರು RO ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ವಿಲೀನ. A: 40 ಖಾತೆ, 10%. B: 60 ಖಾತೆ, 20%. ಒಟ್ಟು ಬೌನ್ಸ್ ದರ?',hi:'दो RO के पोर्टफोलियो मिलाए। A: 40 खाते, 10%। B: 60 खाते, 20%। संयुक्त बाउंस दर?'},
+options:[{en:'16%',kn:'16%',hi:'16%'},{en:'30%',kn:'30%',hi:'30%'},{en:'14%',kn:'14%',hi:'14%'},{en:'15%',kn:'15%',hi:'15%'}],correct:0,
+explanation:{en:'Bounces: 4 + 12 = 16 out of 100 = 16%. Not the simple average 15%.',kn:'4 + 12 = 100 ರಲ್ಲಿ 16 = 16%. ಸರಳ ಸರಾಸರಿ 15% ಅಲ್ಲ.',hi:'4 + 12 = 100 में 16 = 16%। साधारण औसत 15% नहीं।'}},
+{id:13,type:'truefalse',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'True or False: If every customer is on auto-debit, every successful debit is on time, and no bounced customer pays by the due date, then OTRR = 100% − Bounce Rate.',kn:'ಸರಿ ಅಥವಾ ತಪ್ಪು: ಎಲ್ಲರೂ ಸ್ವಯಂ-ಡೆಬಿಟ್‌ನಲ್ಲಿ, ಯಶಸ್ವಿ ಡೆಬಿಟ್ ಸಮಯಕ್ಕೆ, ಬೌನ್ಸ್ ಆದ ಯಾರೂ ದಿನಾಂಕದೊಳಗೆ ಪಾವತಿಸದಿದ್ದರೆ, OTRR = 100% − ಬೌನ್ಸ್ ದರ.',hi:'सही या गलत: अगर सभी ऑटो-डेबिट पर हैं, हर सफल डेबिट समय पर है, और कोई बाउंस ग्राहक तिथि तक भुगतान नहीं करता, तो OTRR = 100% − बाउंस दर।'},
+options:[{en:'True',kn:'ಸರಿ',hi:'सही'},{en:'False',kn:'ತಪ್ಪು',hi:'गलत'},{en:'—',kn:'—',hi:'—'},{en:'—',kn:'—',hi:'—'}],correct:0,
+explanation:{en:'True — but only under all three conditions. Break any one and the two numbers stop adding to 100%.',kn:'ಸರಿ — ಮೂರೂ ಷರತ್ತುಗಳಿದ್ದಾಗ ಮಾತ್ರ.',hi:'सही — केवल तीनों शर्तों के साथ।'}},
+{id:14,type:'numerical',difficulty:{en:'Medium',kn:'ಮಧ್ಯಮ',hi:'मध्यम'},
+q:{en:'RO\'s OTRR is 80% on 50 accounts. How many more customers must pay on time to reach 90%?',kn:'50 ಖಾತೆಗಳಲ್ಲಿ OTRR 80%. 90% ತಲುಪಲು ಇನ್ನೆಷ್ಟು ಗ್ರಾಹಕರು ಸಮಯಕ್ಕೆ ಪಾವತಿಸಬೇಕು?',hi:'50 खातों पर OTRR 80%। 90% तक पहुंचने के लिए और कितने ग्राहकों को समय पर भुगतान करना होगा?'},
+options:[{en:'4',kn:'4',hi:'4'},{en:'5',kn:'5',hi:'5'},{en:'10',kn:'10',hi:'10'},{en:'45',kn:'45',hi:'45'}],correct:1,
+explanation:{en:'Now 40, need 45. 5 more. ("10" is the percentage-point gap.)',kn:'ಈಗ 40, ಬೇಕು 45. 5 ಹೆಚ್ಚು.',hi:'अभी 40, चाहिए 45। 5 और।'}},
+{id:15,type:'scenario',difficulty:{en:'Hard',kn:'ಕಠಿಣ',hi:'कठिन'},
+q:{en:'Targets: Bounce ≤ 10% AND OTRR ≥ 90%. RO has 80 accounts on auto-debit: 10 bounced, 4 of those paid on time, all other debits on time. Which targets are met?',kn:'ಗುರಿ: ಬೌನ್ಸ್ ≤ 10% ಮತ್ತು OTRR ≥ 90%. 80 ಖಾತೆ: 10 ಬೌನ್ಸ್, ಅವರಲ್ಲಿ 4 ಸಮಯಕ್ಕೆ, ಉಳಿದ ಡೆಬಿಟ್ ಸಮಯಕ್ಕೆ. ಯಾವ ಗುರಿ ಪೂರೈಸಿದೆ?',hi:'लक्ष्य: बाउंस ≤ 10% और OTRR ≥ 90%। 80 खाते: 10 बाउंस, उनमें 4 समय पर, बाकी डेबिट समय पर। कौन से लक्ष्य पूरे हुए?'},
+options:[{en:'Neither',kn:'ಯಾವುದೂ ಇಲ್ಲ',hi:'कोई नहीं'},{en:'Both',kn:'ಎರಡೂ',hi:'दोनों'},{en:'Only OTRR',kn:'OTRR ಮಾತ್ರ',hi:'केवल OTRR'},{en:'Only Bounce',kn:'ಬೌನ್ಸ್ ಮಾತ್ರ',hi:'केवल बाउंस'}],correct:2,
+explanation:{en:'Bounce = 10 ÷ 80 = 12.5% → missed. OTRR = (70 + 4) ÷ 80 = 92.5% → met.',kn:'ಬೌನ್ಸ್ = 12.5% → ತಪ್ಪಿತು. OTRR = 74 ÷ 80 = 92.5% → ಪೂರೈಸಿದೆ.',hi:'बाउंस = 12.5% → चूके। OTRR = 74 ÷ 80 = 92.5% → पूरा।'}}
+]
+};
+
+// ===================== APP STATE =====================
+let state = {
+  lang: 'en',
+  empId: '', name: '', position: '', area: '', region: '',
+  currentDay: null,
+  currentQ: 0,
+  answers: {},  // { questionId: selectedIndex }
+  revealed: {}, // { questionId: true } — whether answer was revealed
+  startTime: null,
+  timerInterval: null
+};
+
+// ===================== HELPERS =====================
+function $(id){ return document.getElementById(id) }
+function t(key){ return (UI[key] && UI[key][state.lang]) || (UI[key] && UI[key].en) || key }
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function toast(msg){
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=> el.classList.remove('show'), 3000);
+}
+function updateUI(){
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if(UI[key]) el.textContent = (UI[key][state.lang] || UI[key].en).replace('{m}', QUIZ_MINUTES);
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if(UI[key]) el.innerHTML = UI[key][state.lang] || UI[key].en;
+  });
+  document.documentElement.lang = state.lang;
+}
+
+function setUserChip(){
+  if(!state.name){ $('user-chip').classList.remove('show'); return; }
+  const initials = state.name.split(/\s+/).filter(Boolean).slice(0,2).map(w => w[0].toUpperCase()).join('');
+  $('user-avatar').textContent = initials || '?';
+  $('user-name').textContent = state.name;
+  $('user-sub').textContent = [state.empId, state.position].filter(Boolean).join(' · ');
+  $('user-chip').classList.add('show');
+}
+function rerenderActive(){
+  const active = document.querySelector('.screen.active');
+  if(!active) return;
+  if(active.id === 'screen-days') renderDaySelection();
+  if(active.id === 'screen-quiz') renderQuestion();
+  if(active.id === 'screen-results' && state.lastResult) renderResults.apply(null, state.lastResult);
+}
+
+// ===================== POSITION "OTHER" TOGGLE =====================
+$('inp-position').addEventListener('change', function(){
+  const otherInput = $('inp-position-other');
+  if(this.value === 'Other'){
+    otherInput.style.display = 'block';
+    otherInput.focus();
+  } else {
+    otherInput.style.display = 'none';
+    otherInput.value = '';
+  }
+});
+
+// ===================== LANGUAGE =====================
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.lang = btn.dataset.lang;
+    try { const s = JSON.parse(localStorage.getItem('inprime_quiz_user') || '{}'); s.lang = state.lang; localStorage.setItem('inprime_quiz_user', JSON.stringify(s)); } catch(e){}
+    updateUI();
+    rerenderActive();
+  });
+});
+
+// ===================== REGISTRATION =====================
+$('btn-register').addEventListener('click', e => {
+  e.preventDefault();
+  const empId = $('inp-empid').value.trim();
+  const name = $('inp-name').value.trim();
+  let position = $('inp-position').value;
+  if(position === 'Other'){
+    const otherPos = $('inp-position-other').value.trim();
+    if(!otherPos){ toast(t('fill_all')); return; }
+    position = otherPos;
+  }
+  const area = $('inp-area').value.trim();
+  const region = $('inp-region').value;
+  if(!empId || !name || !position || !area || !region){
+    toast(t('fill_all'));
+    return;
+  }
+  state.empId = empId;
+  state.name = name;
+  state.position = position;
+  state.area = area;
+  state.region = region;
+
+  // Save to localStorage
+  localStorage.setItem('inprime_quiz_user', JSON.stringify({empId, name, position, area, region, lang: state.lang}));
+
+  setUserChip();
+  renderDaySelection();
+  showScreen('screen-days');
+});
+
+// Load saved user
+(function loadSaved(){
+  try {
+    const saved = JSON.parse(localStorage.getItem('inprime_quiz_user'));
+    if(saved){
+      $('inp-empid').value = saved.empId || '';
+      $('inp-name').value = saved.name || '';
+      $('inp-position').value = saved.position || '';
+      $('inp-area').value = saved.area || '';
+      $('inp-region').value = saved.region || '';
+      if(saved.lang){
+        state.lang = saved.lang;
+        document.querySelectorAll('.lang-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.lang === saved.lang);
+        });
+        updateUI();
+      }
+    }
+  } catch(e){}
+})();
+
+$('btn-logout').addEventListener('click', () => {
+  showScreen('screen-register');
+});
+
+// ===================== DAY SELECTION =====================
+function renderDaySelection(){
+  $('welcome-name').textContent = state.name;
+  const grid = $('day-grid');
+  grid.innerHTML = '';
+  const clock = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  const lock = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  DAY_META.forEach((d, i) => {
+    const dayNum = i + 1;
+    const hasQs = QUESTIONS[d.key] && QUESTIONS[d.key].length > 0;
+    const isUnlocked = UNLOCKED_DAYS.includes(dayNum) && hasQs;
+    const div = document.createElement('div');
+    div.className = 'card day-card ' + (isUnlocked ? 'open' : 'locked');
+    div.innerHTML = `
+      <div class="day-top">
+        <span class="day-label">${t('day_word')} ${dayNum}</span>
+        ${isUnlocked
+          ? `<span class="pill pill-open"><span class="dot"></span>${t('status_open')}</span>`
+          : `<span class="pill pill-locked">${lock}${t('locked')}</span>`}
+      </div>
+      <div class="day-title">${d[state.lang] || d.en}</div>
+      <div class="day-meta">${clock}<span>${QUIZ_MINUTES} ${t('mins')}</span></div>
+      <div class="day-cta">
+        ${isUnlocked
+          ? `<button class="btn btn-primary">${t('start_day')}</button>`
+          : `<button class="btn" disabled>${lock}&nbsp;${t('locked')}</button>`}
+      </div>`;
+    if(isUnlocked){
+      div.addEventListener('click', () => startQuiz(d.key, dayNum));
+    }
+    grid.appendChild(div);
+  });
+}
+
+// ===================== QUIZ ENGINE =====================
+function startQuiz(dayKey, dayNum){
+  state.currentDay = dayKey;
+  state.currentQ = 0;
+  state.answers = {};
+  state.revealed = {};
+  state.lastResult = null;
+  state.confettiShown = false;
+  state.startTime = Date.now();
+
+  // Start timer
+  if(state.timerInterval) clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(updateTimer, 1000);
+
+  // Register attempt
+  sendToSheets({
+    type: 'registration',
+    employeeId: state.empId,
+    name: state.name,
+    position: state.position,
+    areaOffice: state.area,
+    region: state.region,
+    language: state.lang,
+    day: dayNum
+  });
+
+  renderQuestion();
+  showScreen('screen-quiz');
+}
+
+function updateTimer(){
+  if(!state.startTime) return;
+  const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+  const mins = String(Math.floor(elapsed / 60)).padStart(2,'0');
+  const secs = String(elapsed % 60).padStart(2,'0');
+  $('q-timer').textContent = mins + ':' + secs;
+}
+
+function renderQuestion(){
+  const qs = QUESTIONS[state.currentDay];
+  const q = qs[state.currentQ];
+  const total = qs.length;
+  const num = state.currentQ + 1;
+
+  // Progress
+  const dm = DAY_META.find(d => d.key === state.currentDay);
+  $('q-progress').textContent = dm ? (dm[state.lang] || dm.en) : '';
+  $('q-bar').style.width = ((num / total) * 100) + '%';
+
+  // Badge
+  const badge = $('q-badge');
+  badge.className = 'q-badge ' + q.type;
+  const typeLabels = {
+    numerical: {en:'Numerical',kn:'ಸಂಖ್ಯಾತ್ಮಕ',hi:'संख्यात्मक'},
+    conceptual: {en:'Conceptual',kn:'ಪರಿಕಲ್ಪನಾತ್ಮಕ',hi:'अवधारणात्मक'},
+    scenario: {en:'Scenario',kn:'ಸನ್ನಿವೇಶ',hi:'परिदृश्य'},
+    tricky: {en:'Tricky',kn:'ಟ್ರಿಕಿ',hi:'ट्रिकी'},
+    truefalse: {en:'True/False',kn:'ಸರಿ/ತಪ್ಪು',hi:'सही/गलत'}
+  };
+  const diff = q.difficulty[state.lang] || q.difficulty.en;
+  badge.textContent = (typeLabels[q.type][state.lang] || typeLabels[q.type].en) + ' • ' + diff;
+
+  // Question
+  $('q-text').textContent = q.q[state.lang] || q.q.en;
+
+  // Options
+  const optContainer = $('q-options');
+  optContainer.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  const isRevealed = state.revealed[q.id];
+  const selectedIdx = state.answers[q.id];
+
+  q.options.forEach((opt, i) => {
+    const text = opt[state.lang] || opt.en;
+    if(text === '—') return; // Skip placeholder options for T/F
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    if(isRevealed){
+      if(i === q.correct) btn.classList.add('correct');
+      else if(i === selectedIdx) btn.classList.add('wrong');
+      else btn.classList.add('dim');
+    } else if(selectedIdx === i){
+      btn.classList.add('selected');
+    }
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${text}</span>`
+      + '<svg class="opt-mark ok" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+      + '<svg class="opt-mark no" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+    if(!isRevealed){
+      btn.addEventListener('click', () => selectOption(q.id, i));
+    }
+    optContainer.appendChild(btn);
+  });
+
+  // Explanation
+  const expEl = $('q-explanation');
+  if(isRevealed){
+    expEl.innerHTML = '<svg class="ex-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>'
+      + '<div><strong>' + t('explanation') + '</strong>' + (q.explanation[state.lang] || q.explanation.en) + '</div>';
+    expEl.classList.add('show');
+  } else {
+    expEl.classList.remove('show');
+  }
+
+  // Navigation
+  $('btn-prev').style.visibility = state.currentQ > 0 ? 'visible' : 'hidden';
+  const isLast = state.currentQ === total - 1;
+  $('btn-next').textContent = isLast ? t('btn_submit') : t('btn_next');
+  $('btn-next').className = isLast ? 'btn btn-accent' : 'btn btn-primary';
+}
+
+function selectOption(qId, idx){
+  state.answers[qId] = idx;
+  // Reveal answer immediately
+  state.revealed[qId] = true;
+  renderQuestion();
+}
+
+$('btn-prev').addEventListener('click', () => {
+  if(state.currentQ > 0){
+    state.currentQ--;
+    renderQuestion();
+  }
+});
+
+$('btn-next').addEventListener('click', () => {
+  const qs = QUESTIONS[state.currentDay];
+  if(state.currentQ < qs.length - 1){
+    state.currentQ++;
+    renderQuestion();
+  } else {
+    // Show custom confirm modal instead of confirm()
+    const answered = Object.keys(state.answers).length;
+    const msg = t('confirm_submit');
+    $('confirm-msg').textContent = msg;
+    $('confirm-modal').classList.add('show');
+  }
+});
+
+// Confirm modal handlers
+$('confirm-yes').addEventListener('click', () => {
+  $('confirm-modal').classList.remove('show');
+  submitQuiz();
+});
+$('confirm-no').addEventListener('click', () => {
+  $('confirm-modal').classList.remove('show');
+});
+
+// ===================== SUBMIT & RESULTS =====================
+async function submitQuiz(){
+  if(state.timerInterval) clearInterval(state.timerInterval);
+  const qs = QUESTIONS[state.currentDay];
+  let score = 0;
+  const answerDetails = [];
+
+  qs.forEach(q => {
+    const selected = state.answers[q.id];
+    const isCorrect = selected === q.correct;
+    if(isCorrect) score++;
+    answerDetails.push({
+      questionNo: q.id,
+      selected: selected !== undefined ? ['A','B','C','D'][selected] : 'Not answered',
+      correct: ['A','B','C','D'][q.correct],
+      isCorrect: isCorrect
+    });
+  });
+
+  const pct = Math.round((score / qs.length) * 100);
+  const elapsed = Math.round((Date.now() - state.startTime) / 1000 / 60 * 10) / 10;
+  const dayNum = DAY_META.findIndex(d => d.key === state.currentDay) + 1;
+
+  // Show overlay
+  $('overlay').classList.add('show');
+
+  // Send to Google Sheets
+  const submitted = await sendToSheets({
+    type: 'submission',
+    employeeId: state.empId,
+    name: state.name,
+    position: state.position,
+    areaOffice: state.area,
+    region: state.region,
+    day: dayNum,
+    score: score,
+    totalQuestions: qs.length,
+    percentage: pct,
+    timeTaken: elapsed,
+    language: state.lang,
+    answers: answerDetails
+  });
+
+  $('overlay').classList.remove('show');
+
+  if(submitted){
+    toast(t('submitted'));
+  } else {
+    toast(t('submit_fail'));
+  }
+
+  // Show results
+  state.lastResult = [score, qs.length, pct, answerDetails, $('q-timer').textContent];
+  renderResults.apply(null, state.lastResult);
+  showScreen('screen-results');
+}
+
+function renderResults(score, total, pct, details, timeText){
+  // Score-based celebration
+  let emoji, title, titleClass, sub, cardBorder;
+  const resultMsgs = {
+    excellent: {
+      en: { emoji:'🏆', title:'Congratulations!', sub:'Excellent work. You know your Bounce Rate and OTRR well.' },
+      kn: { emoji:'🏆', title:'ಅಭಿನಂದನೆಗಳು!', sub:'ಅತ್ಯುತ್ತಮ. ನಿಮಗೆ ಬೌನ್ಸ್ ದರ ಮತ್ತು OTRR ಚೆನ್ನಾಗಿ ತಿಳಿದಿದೆ.' },
+      hi: { emoji:'🏆', title:'बधाई हो!', sub:'बहुत बढ़िया। आपको बाउंस दर और OTRR अच्छी तरह आता है।' }
+    },
+    good: {
+      en: { emoji:'👏', title:'Good performance', sub:'Well done. Check the questions you missed below.' },
+      kn: { emoji:'👏', title:'ಒಳ್ಳೆಯ ಕಾರ್ಯಕ್ಷಮತೆ!', sub:'ಚೆನ್ನಾಗಿದೆ. ತಪ್ಪಾದ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೆಳಗೆ ನೋಡಿ.' },
+      hi: { emoji:'👏', title:'अच्छा प्रदर्शन!', sub:'अच्छा किया। नीचे गलत सवाल देखें।' }
+    },
+    poor: {
+      en: { emoji:'💪', title:'Needs improvement', sub:'Go through the explanations below to see where you went wrong.' },
+      kn: { emoji:'💪', title:'ಸುಧಾರಣೆ ಅಗತ್ಯ', sub:'ಎಲ್ಲಿ ತಪ್ಪಾಯಿತು ಎಂದು ತಿಳಿಯಲು ಕೆಳಗಿನ ವಿವರಣೆಗಳನ್ನು ನೋಡಿ.' },
+      hi: { emoji:'💪', title:'सुधार की जरूरत', sub:'गलती कहां हुई, यह जानने के लिए नीचे व्याख्या देखें।' }
+    }
+  };
+
+  // Score thresholds (out of 15): ≥12 = excellent, 9–11 = good, <9 = poor
+  let level;
+  if(score >= 12) level = 'excellent';
+  else if(score >= 9) level = 'good';
+  else level = 'poor';
+
+  const msgs = resultMsgs[level][state.lang] || resultMsgs[level].en;
+  const icons = {
+    excellent:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>',
+    good:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11M15 5.9 14 10h5.8a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 18.5 21H7V10l4.6-6.9A1.5 1.5 0 0 1 14.4 4z"/></svg>',
+    poor:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>'
+  };
+  $('r-emoji').innerHTML = icons[level];
+  $('r-emoji').className = 'result-emoji ' + level;
+  $('r-band').className = 'result-band ' + level;
+  $('r-time').textContent = timeText || '—';
+  $('r-title').textContent = msgs.title;
+  $('r-title').className = 'result-title ' + level;
+  $('r-score').textContent = score + '/' + total;
+  $('r-pct').textContent = pct + '%';
+  $('r-pct').className = 'score-pct ' + level;
+  $('r-msg').textContent = '';
+  $('r-sub').textContent = msgs.sub;
+
+  // Green/amber/red border on the card
+
+
+  // Confetti for excellent scores (≥20)
+  if(score >= 12 && !state.confettiShown){ state.confettiShown = true; launchConfetti(); }
+
+  const qs = QUESTIONS[state.currentDay];
+  const reviewEl = $('r-review');
+  reviewEl.innerHTML = '';
+
+  const okIc = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  const noIc = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+  const L = ['A','B','C','D'];
+  const optText = (q, letter) => { const i = L.indexOf(letter); return i >= 0 ? (q.options[i][state.lang] || q.options[i].en) : ''; };
+  qs.forEach((q, i) => {
+    const d = details[i];
+    const div = document.createElement('div');
+    div.className = 'review-item';
+    const yours = d.selected === 'Not answered'
+      ? `<span class="chip chip-you bad">${t('not_answered')}</span>`
+      : `<span class="chip chip-you ${d.isCorrect ? '' : 'bad'}">${t('your_ans')}: <b>${d.selected}. ${optText(q, d.selected)}</b></span>`;
+    const correct = d.isCorrect ? '' : `<span class="chip chip-ok">${t('correct_ans')}: <b>${d.correct}. ${optText(q, d.correct)}</b></span>`;
+    div.innerHTML = `
+      <div class="review-status ${d.isCorrect ? 'correct' : 'wrong'}">${d.isCorrect ? okIc : noIc}</div>
+      <div>
+        <div class="review-qno">${t('question_word')} ${i + 1}</div>
+        <div class="review-q">${q.q[state.lang] || q.q.en}</div>
+        <div class="review-answer">${yours}${correct}</div>
+        <div class="review-exp">${q.explanation[state.lang] || q.explanation.en}</div>
+      </div>`;
+    reviewEl.appendChild(div);
+  });
+}
+
+function launchConfetti(){
+  const container = $('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#e53e3e','#38a169','#e8a838','#3182ce','#805ad5','#d69e2e','#ed64a6'];
+  for(let i = 0; i < 60; i++){
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDelay = Math.random() * 2 + 's';
+    el.style.animationDuration = (2 + Math.random() * 2) + 's';
+    el.style.width = (6 + Math.random()*8) + 'px';
+    el.style.height = (6 + Math.random()*8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    container.appendChild(el);
+  }
+  setTimeout(() => { container.innerHTML = ''; }, 4000);
+}
+
+$('btn-back-days').addEventListener('click', () => {
+  renderDaySelection();
+  showScreen('screen-days');
+});
+
+// ===================== GOOGLE SHEETS API =====================
+async function sendToSheets(data){
+  if(!SHEETS_API_URL){
+    console.log('No Sheets API URL configured. Data:', data);
+    return false;
+  }
+  // Retry up to 3 times
+  for(let attempt = 0; attempt < 3; attempt++){
+    try {
+      const res = await fetch(SHEETS_API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      });
+      return true; // no-cors doesn't give us response body, but request was sent
+    } catch(e){
+      console.warn('Sheets API attempt ' + (attempt+1) + ' failed:', e);
+      if(attempt < 2) await new Promise(r => setTimeout(r, 1000 * (attempt+1)));
+    }
+  }
+  // Save to localStorage as backup
+  try {
+    const backup = JSON.parse(localStorage.getItem('inprime_quiz_backup') || '[]');
+    backup.push({...data, timestamp: new Date().toISOString()});
+    localStorage.setItem('inprime_quiz_backup', JSON.stringify(backup));
+  } catch(e){}
+  return false;
+}
+
+// Initial UI setup
+updateUI();
+</script>
+</body>
+</html>
