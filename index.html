@@ -105,6 +105,11 @@ main{flex:1;width:100%}
 .reg-sub{font-size:14px;color:var(--muted);margin-top:6px}
 
 /* ---------- Day selection ---------- */
+.dash-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.dash-hello{font-size:14px;font-weight:600;color:var(--brand);margin-bottom:2px}
+.day-num{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;background:var(--brand);color:#fff;box-shadow:0 6px 16px -6px rgba(107,33,168,.55)}
+.day-card.locked .day-num{background:#ececf1;color:#a1a1aa;box-shadow:none}
+.day-card.open::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,#6b21a8,#a855f7)}
 .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
 .info-row{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;margin-bottom:28px}
 .info-card{padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
@@ -113,12 +118,12 @@ main{flex:1;width:100%}
 .schedule-banner,.formula-note{font-size:14px;color:var(--text);line-height:1.55}
 .section-label{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px}
 .day-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.day-card{position:relative;padding:24px;display:flex;flex-direction:column;gap:14px;min-height:210px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.day-card{position:relative;padding:26px 24px 24px;display:flex;flex-direction:column;gap:16px;min-height:220px;transition:border-color .15s,box-shadow .15s,transform .15s}
 .day-card.open{cursor:pointer}
 .day-card.open:hover{border-color:var(--brand-200);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
 .day-card.locked{background:#fbfbfc}
 .day-top{display:flex;align-items:center;justify-content:space-between}
-.day-label{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.day-label{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid}
 .pill-open{color:var(--green);background:var(--green-bg);border-color:var(--green-bd)}
 .pill-open .dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
@@ -307,7 +312,7 @@ main{flex:1;width:100%}
       <div class="reg-head">
         <div class="reg-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
         <h1 class="reg-title" data-i18n-html="reg_title">Bounce Rate &amp; OTRR Quiz</h1>
-        <p class="reg-sub" data-i18n="reg_sub">3 days · about {m} min each</p>
+        <p class="reg-sub" data-i18n="reg_sub">Enter your details to begin</p>
       </div>
       <div class="form-grid">
         <div class="form-group">
@@ -351,26 +356,13 @@ main{flex:1;width:100%}
 
 <!-- ==================== SCREEN: DAY SELECTION ==================== -->
 <section id="screen-days" class="screen">
-  <div class="page-head">
+  <div class="dash-head">
     <div>
-      <div class="eyebrow" data-i18n="dash_eyebrow">Your dashboard</div>
-      <h1 class="page-title"><span data-i18n="welcome">Welcome,</span> <span id="welcome-name"></span></h1>
-      <p class="page-sub" data-i18n="select_day_sub">About {m} minutes</p>
+      <p class="dash-hello" data-i18n="welcome">Welcome,</p>
+      <h1 class="page-title" id="welcome-name"></h1>
     </div>
     <button class="link-btn" id="btn-logout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span data-i18n="btn_change">Change Details</span></button>
   </div>
-
-  <div class="info-row">
-    <div class="card info-card">
-      <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
-      <div><div class="info-label" data-i18n="lbl_schedule">Schedule</div><div class="schedule-banner" data-i18n="schedule">3-day quiz · A new day opens every day at 10:00 AM</div></div>
-    </div>
-    <div class="card info-card">
-      <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2"/></svg></div>
-      <div><div class="info-label" data-i18n="lbl_formulas">Formulas used</div><div class="formula-note" data-i18n="formulas">Bounce Rate = bounced accounts ÷ eligible accounts × 100. OTRR = accounts paid on or before the due date (any mode) ÷ eligible accounts × 100.</div></div>
-    </div>
-  </div>
-
   <div class="section-label" data-i18n="select_day">Select Quiz Day</div>
   <div class="day-grid" id="day-grid"></div>
 </section>
@@ -471,18 +463,14 @@ const SHEETS_API_URL = '';
 // [1,2,3] = all 3 days open
 const UNLOCKED_DAYS = [1];
 
-// Time shown to participants on the day cards (minutes)
-const QUIZ_MINUTES = 10;
+const QUIZ_MINUTES = 10; // (not shown to participants)
 // ===================================================================
 
 // ===================== TRANSLATIONS =====================
 const UI = {
   reg_title: { en:'Bounce Rate &amp; OTRR Quiz', kn:'ಬೌನ್ಸ್ ದರ &amp; OTRR ಕ್ವಿಜ್', hi:'बाउंस दर और OTRR क्विज़' },
-  reg_sub: { en:'3 days · about {m} min each', kn:'3 ದಿನ · ಪ್ರತಿದಿನ ಸುಮಾರು {m} ನಿಮಿಷ', hi:'3 दिन · हर दिन लगभग {m} मिनट' },
-  dash_eyebrow: { en:'Your dashboard', kn:'ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', hi:'आपका डैशबोर्ड' },
+  reg_sub: { en:'Enter your details to begin', kn:'ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ವಿವರ ನಮೂದಿಸಿ', hi:'शुरू करने के लिए अपना विवरण भरें' },
   welcome: { en:'Welcome,', kn:'ಸ್ವಾಗತ,', hi:'स्वागत है,' },
-  lbl_schedule: { en:'Schedule', kn:'ವೇಳಾಪಟ್ಟಿ', hi:'समय-सारणी' },
-  lbl_formulas: { en:'Formulas used', kn:'ಬಳಸಿದ ಸೂತ್ರಗಳು', hi:'उपयोग किए गए सूत्र' },
   status_open: { en:'Open', kn:'ತೆರೆದಿದೆ', hi:'खुला' },
   start_day: { en:'Start round', kn:'ಸುತ್ತು ಪ್ರಾರಂಭಿಸಿ', hi:'राउंड शुरू करें' },
   day_word: { en:'Day', kn:'ದಿನ', hi:'दिन' },
@@ -507,7 +495,6 @@ const UI = {
   opt_north: { en:'North India', kn:'ಉತ್ತರ ಭಾರತ', hi:'उत्तर भारत' },
   btn_start: { en:'Start Quiz', kn:'ಕ್ವಿಜ್ ಪ್ರಾರಂಭಿಸಿ', hi:'क्विज़ शुरू करें' },
   select_day: { en:'Select Quiz Day', kn:'ಕ್ವಿಜ್ ದಿನ ಆಯ್ಕೆ ಮಾಡಿ', hi:'क्विज़ दिन चुनें' },
-  select_day_sub: { en:'About {m} minutes', kn:'ಸುಮಾರು {m} ನಿಮಿಷ', hi:'लगभग {m} मिनट' },
   mins: { en:'min', kn:'ನಿಮಿಷ', hi:'मिनट' },
   btn_change: { en:'Change Details', kn:'ವಿವರಗಳನ್ನು ಬದಲಾಯಿಸಿ', hi:'विवरण बदलें' },
   btn_prev: { en:'← Previous', kn:'← ಹಿಂದಿನ', hi:'← पिछला' },
@@ -532,8 +519,6 @@ const UI = {
   coming_soon: { en:'Coming Soon', kn:'ಶೀಘ್ರದಲ್ಲಿ', hi:'जल्द आ रहा है' },
   locked: { en:'Locked', kn:'ಲಾಕ್ ಆಗಿದೆ', hi:'लॉक है' },
   open_now: { en:'Open', kn:'ತೆರೆದಿದೆ', hi:'खुला है' },
-  schedule: { en:'3-day quiz · A new day opens every day at 10:00 AM', kn:'3 ದಿನಗಳ ಕ್ವಿಜ್ · ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ 10:00 ಗಂಟೆಗೆ ಹೊಸ ದಿನ ತೆರೆಯುತ್ತದೆ', hi:'3 दिन की क्विज़ · हर दिन सुबह 10:00 बजे नया दिन खुलेगा' },
-  formulas: { en:'Bounce Rate = bounced accounts ÷ eligible accounts × 100. OTRR = accounts paid on or before the due date (any mode) ÷ eligible accounts × 100. A bounce is still counted even if the customer pays later.', kn:'ಬೌನ್ಸ್ ದರ = ಬೌನ್ಸ್ ಆದ ಖಾತೆಗಳು ÷ ಅರ್ಹ ಖಾತೆಗಳು × 100. OTRR = ನಿಗದಿತ ದಿನಾಂಕದಂದು ಅಥವಾ ಮೊದಲು (ಯಾವುದೇ ವಿಧಾನದಲ್ಲಿ) ಪಾವತಿಸಿದ ಖಾತೆಗಳು ÷ ಅರ್ಹ ಖಾತೆಗಳು × 100. ಗ್ರಾಹಕರು ನಂತರ ಪಾವತಿಸಿದರೂ ಬೌನ್ಸ್ ಅನ್ನು ಎಣಿಸಲಾಗುತ್ತದೆ.', hi:'बाउंस दर = बाउंस हुए खाते ÷ पात्र खाते × 100. OTRR = देय तिथि पर या उससे पहले (किसी भी माध्यम से) भुगतान करने वाले खाते ÷ पात्र खाते × 100. ग्राहक बाद में भुगतान कर दे तब भी बाउंस गिना जाता है।' },
   no_api: { en:'Google Sheets URL not configured. Results shown but not saved.', kn:'Google Sheets URL ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ.', hi:'Google Sheets URL कॉन्फ़िगर नहीं है।' },
 };
 
@@ -898,13 +883,15 @@ function renderDaySelection(){
     div.className = 'card day-card ' + (isUnlocked ? 'open' : 'locked');
     div.innerHTML = `
       <div class="day-top">
-        <span class="day-label">${t('day_word')} ${dayNum}</span>
+        <div class="day-num">${dayNum}</div>
         ${isUnlocked
           ? `<span class="pill pill-open"><span class="dot"></span>${t('status_open')}</span>`
           : `<span class="pill pill-locked">${lock}${t('locked')}</span>`}
       </div>
-      <div class="day-title">${d[state.lang] || d.en}</div>
-      <div class="day-meta">${clock}<span>${QUIZ_MINUTES} ${t('mins')}</span></div>
+      <div>
+        <div class="day-label">${t('day_word')} ${dayNum}</div>
+        <div class="day-title">${d[state.lang] || d.en}</div>
+      </div>
       <div class="day-cta">
         ${isUnlocked
           ? `<button class="btn btn-primary">${t('start_day')}</button>`
@@ -1225,32 +1212,44 @@ $('btn-back-days').addEventListener('click', () => {
 });
 
 // ===================== GOOGLE SHEETS API =====================
+// Sends data to the Apps Script web app and waits for {"status":"success"}.
+// Retries with backoff (busy periods), and every payload carries a unique id
+// so the script ignores accidental duplicates.
+function makeId(){
+  return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+function saveBackup(data){
+  try {
+    const backup = JSON.parse(localStorage.getItem('inprime_quiz_backup') || '[]');
+    backup.push({...data, savedAt: new Date().toISOString()});
+    localStorage.setItem('inprime_quiz_backup', JSON.stringify(backup.slice(-20)));
+  } catch(e){}
+}
 async function sendToSheets(data){
-  if(!SHEETS_API_URL){
-    console.log('No Sheets API URL configured. Data:', data);
-    return false;
-  }
-  // Retry up to 3 times
-  for(let attempt = 0; attempt < 3; attempt++){
+  if(!SHEETS_API_URL){ console.warn('SHEETS_API_URL is empty — nothing saved.', data); saveBackup(data); return false; }
+  const payload = JSON.stringify({ ...data, submissionId: data.submissionId || makeId(), sentAt: new Date().toISOString() });
+  const attempts = 5;
+  for(let i = 0; i < attempts; i++){
     try {
       const res = await fetch(SHEETS_API_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(data)
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: payload,
+        redirect: 'follow'
       });
-      return true; // no-cors doesn't give us response body, but request was sent
-    } catch(e){
-      console.warn('Sheets API attempt ' + (attempt+1) + ' failed:', e);
-      if(attempt < 2) await new Promise(r => setTimeout(r, 1000 * (attempt+1)));
+      const out = await res.json();
+      if(out && (out.status === 'success' || out.status === 'duplicate')) return true;
+      console.warn('Sheets replied:', out);
+    } catch(err){
+      console.warn('Sheets attempt ' + (i + 1) + ' failed:', err);
+      // If the browser blocked reading the reply, send once without reading it.
+      if(i === attempts - 1){
+        try { await fetch(SHEETS_API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: payload }); return true; } catch(e){}
+      }
     }
+    await new Promise(r => setTimeout(r, 800 * Math.pow(2, i) + Math.random() * 700));
   }
-  // Save to localStorage as backup
-  try {
-    const backup = JSON.parse(localStorage.getItem('inprime_quiz_backup') || '[]');
-    backup.push({...data, timestamp: new Date().toISOString()});
-    localStorage.setItem('inprime_quiz_backup', JSON.stringify(backup));
-  } catch(e){}
+  saveBackup(data);
   return false;
 }
 
