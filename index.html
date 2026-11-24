@@ -1073,6 +1073,7 @@ async function submitQuiz(){
     answerDetails.push({
       questionNo: q.id,
       question: q.q.en,
+      selectedText: selected !== undefined ? (q.options[selected].en || '') : '',
       selected: selected !== undefined ? ['A','B','C','D'][selected] : 'Not answered',
       correct: ['A','B','C','D'][q.correct],
       isCorrect: isCorrect
