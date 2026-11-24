@@ -334,14 +334,6 @@ main{flex:1;width:100%}
           </select>
           <input type="text" id="inp-position-other" placeholder="Enter your position" style="display:none;margin-top:10px">
         </div>
-        <div class="form-group am-field">
-          <label for="inp-amid" data-i18n="lbl_amid">AM Employee ID</label>
-          <input type="text" id="inp-amid" placeholder="INP0567" autocomplete="off">
-        </div>
-        <div class="form-group am-field">
-          <label for="inp-amname" data-i18n="lbl_amname">AM Full Name</label>
-          <input type="text" id="inp-amname" autocomplete="off">
-        </div>
         <div class="form-group">
           <label for="inp-area" data-i18n="lbl_area">Area Office</label>
           <input type="text" id="inp-area" placeholder="Hubli" required>
@@ -798,11 +790,6 @@ function rerenderActive(){
 }
 
 // ===================== POSITION "OTHER" TOGGLE =====================
-function toggleAmFields(){
-  const isAM = $('inp-position').value === 'AM';
-  document.querySelectorAll('.am-field').forEach(el => el.style.display = isAM ? 'none' : '');
-}
-$('inp-position').addEventListener('change', toggleAmFields);
 $('inp-position').addEventListener('change', function(){
   const otherInput = $('inp-position-other');
   if(this.value === 'Other'){
@@ -838,12 +825,11 @@ $('btn-register').addEventListener('click', e => {
     if(!otherPos){ toast(t('fill_all')); return; }
     position = otherPos;
   }
-  const isAM = $('inp-position').value === 'AM';
-  const amId = isAM ? empId : $('inp-amid').value.trim();
-  const amName = isAM ? name : $('inp-amname').value.trim();
+  const amId = '';
+  const amName = '';
   const area = $('inp-area').value.trim();
   const region = $('inp-region').value;
-  if(!empId || !name || !position || !amId || !amName || !area || !region){
+  if(!empId || !name || !position || !area || !region){
     toast(t('fill_all'));
     return;
   }
@@ -871,9 +857,6 @@ $('btn-register').addEventListener('click', e => {
       $('inp-empid').value = saved.empId || '';
       $('inp-name').value = saved.name || '';
       $('inp-position').value = saved.position || '';
-      $('inp-amid').value = saved.amId || '';
-      $('inp-amname').value = saved.amName || '';
-      toggleAmFields();
       $('inp-area').value = saved.area || '';
       $('inp-region').value = saved.region || '';
       if(saved.lang){
